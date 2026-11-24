@@ -1,0 +1,68 @@
+name: Sweep and publish
+
+on:
+  schedule:
+    # Twice an hour, offset from the hour. A full cohort rebuild can take
+    # about ten to fifteen minutes; a positions-only pass is much shorter.
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+  push:
+    paths:
+      - "app/**"
+      - "site/**"
+      - "requirements.txt"
+      - ".github/workflows/sweep.yml"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: sweep
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run sweep
+        run: python -m app.sweep
+
+      - name: Commit snapshot
+        run: |
+          git config user.name "Prafull Joshi"
+          git config user.email "prafulljoshi92@gmail.com"
+          git add data/signal.json data/history.json data/cohort.json site/data/signal.json site/data/history.json
+          if git diff --staged --quiet; then
+            echo "No snapshot changes."
+          else
+            git commit -m "Update BTC consensus snapshot"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git push
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
