@@ -1,18 +1,18 @@
 {
-  "p_long": 0.08235233449657192,
-  "ci_low": 0.04036618719758042,
-  "ci_high": 0.13072667970879737,
-  "beta_ci_low": 0.07521665459522467,
-  "beta_ci_high": 0.16652873165227805,
+  "p_long": 0.0897033322482786,
+  "ci_low": 0.04671242210588015,
+  "ci_high": 0.14136583708325617,
+  "beta_ci_low": 0.08308367316056928,
+  "beta_ci_high": 0.17698665016382614,
   "verdict": "SHORT",
   "n_traders": 500,
-  "n_long": 21,
+  "n_long": 23,
   "n_short": 165,
-  "n_flat": 314,
-  "notional_long": 25203975.018117998,
-  "notional_short": 545850428.6765696,
-  "weight_long": 368.0913561048741,
-  "weight_short": 4101.622324206115,
+  "n_flat": 312,
+  "notional_long": 27841508.79468,
+  "notional_short": 497783595.0520408,
+  "weight_long": 400.1604183849242,
+  "weight_short": 4060.771058244844,
   "top_positions": [
     {
       "address": "0x218a65e21eddeece7a9df38c6bbdd89f692b7da2",
@@ -23,11 +23,11 @@
       "entry": 78439.7,
       "leverage_type": "isolated",
       "leverage": 8.0,
-      "unrealized_pnl": 15952155.424963,
-      "notional": 52242265.11235,
-      "equity": 10741335.992788,
-      "month_pnl": 21036067.575708,
-      "weight": 50.58524722082258
+      "unrealized_pnl": 16184281.446913,
+      "notional": 52010139.0904,
+      "equity": 11001322.938473,
+      "month_pnl": 20871683.696949,
+      "weight": 50.561711997527496
     },
     {
       "address": "0xb695651daa495f59dd2725c6fe98322d8b51a92d",
@@ -38,26 +38,11 @@
       "entry": 75770.5,
       "leverage_type": "cross",
       "leverage": 20.0,
-      "unrealized_pnl": 12184576.31708,
-      "notional": 46696596.51891,
-      "equity": 16580317.95929,
-      "month_pnl": 37037652.742049,
-      "weight": 49.08243608816164
-    },
-    {
-      "address": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
-      "display_name": "BobbyBigSize",
-      "side": "SHORT",
-      "size": -773.76364,
-      "abs_size": 773.76364,
-      "entry": 62536.4,
-      "leverage_type": "cross",
-      "leverage": 30.0,
-      "unrealized_pnl": 1892187.341294,
-      "notional": 46496230.89124,
-      "equity": 10093447.462958,
-      "month_pnl": 37811697.594126,
-      "weight": 52.344387297977406
+      "unrealized_pnl": 12366028.702415,
+      "notional": 46515144.133575,
+      "equity": 16790121.584747,
+      "month_pnl": 36852041.868639,
+      "weight": 48.266860270768426
     },
     {
       "address": "0xdf954bbe619273a56e0cfa90dad8382195dc7d72",
@@ -68,41 +53,41 @@
       "entry": 74788.4,
       "leverage_type": "cross",
       "leverage": 40.0,
-      "unrealized_pnl": 9258709.950406,
-      "notional": 37854626.50591,
-      "equity": 9910129.34921,
-      "month_pnl": 37689667.246548,
-      "weight": 52.33468968913043
+      "unrealized_pnl": 9402339.692686,
+      "notional": 37710996.76363,
+      "equity": 9861882.384825,
+      "month_pnl": 37419639.602,
+      "weight": 52.313118822983895
     },
     {
       "address": "0xfc27136e42af1732ddc9ce2605ea9bff1b959d9d",
       "display_name": null,
       "side": "SHORT",
-      "size": -539.07704,
-      "abs_size": 539.07704,
-      "entry": 67307.4,
+      "size": -536.56726,
+      "abs_size": 536.56726,
+      "entry": 67274.6,
       "leverage_type": "cross",
       "leverage": 25.0,
-      "unrealized_pnl": 3890219.683678,
-      "notional": 32393678.41064,
-      "equity": 13462889.435361,
-      "month_pnl": 30535600.461215,
-      "weight": 41.468492903073994
+      "unrealized_pnl": 3979779.455716,
+      "notional": 32117574.76545,
+      "equity": 13673579.024013,
+      "month_pnl": 30148474.016619,
+      "weight": 40.45155015286931
     },
     {
       "address": "0xca4903c207a0df58bf37d4bc8bbc5210726f53c8",
       "display_name": null,
       "side": "SHORT",
-      "size": -489.97224,
-      "abs_size": 489.97224,
-      "entry": 72351.2,
+      "size": -489.10319,
+      "abs_size": 489.10319,
+      "entry": 72343.9,
       "leverage_type": "cross",
       "leverage": 40.0,
-      "unrealized_pnl": 6007174.907047,
-      "notional": 29442921.87384,
-      "equity": 12317754.704433,
-      "month_pnl": 18254945.851637,
-      "weight": 39.96540726012885
+      "unrealized_pnl": 6125488.86439,
+      "notional": 29258152.8258,
+      "equity": 12570623.308371,
+      "month_pnl": 18097705.110694,
+      "weight": 38.89557686147129
     },
     {
       "address": "0x45d26f28196d226497130c4bac709d808fed4029",
@@ -113,11 +98,11 @@
       "entry": 77001.5,
       "leverage_type": "cross",
       "leverage": 20.0,
-      "unrealized_pnl": 7373020.182921,
-      "notional": 26199676.0,
-      "equity": 20433955.36523,
-      "month_pnl": 39405523.073543,
-      "weight": 22.424295216273357
+      "unrealized_pnl": 7472428.182921,
+      "notional": 26100268.0,
+      "equity": 21041747.494362,
+      "month_pnl": 39259361.178562,
+      "weight": 21.689333044010276
     },
     {
       "address": "0x8e096995c3e4a3f0bc5b3ea1cba94de2aa4d70c9",
@@ -128,11 +113,11 @@
       "entry": 64360.6,
       "leverage_type": "cross",
       "leverage": 20.0,
-      "unrealized_pnl": 1257101.126743,
-      "notional": 17688121.2432,
-      "equity": 2937653.426456,
-      "month_pnl": 1994674.724159,
-      "weight": 43.51797615243943
+      "unrealized_pnl": 1335401.014423,
+      "notional": 17609821.35552,
+      "equity": 3016148.603808,
+      "month_pnl": 2081637.789696,
+      "weight": 43.64599806337437
     },
     {
       "address": "0xcf90cfecf74e631feea816d02e757c0c8e895c0e",
@@ -143,11 +128,11 @@
       "entry": 71511.4,
       "leverage_type": "isolated",
       "leverage": 15.0,
-      "unrealized_pnl": 2945676.54603,
-      "notional": 15497689.3164,
-      "equity": 5971286.821968,
-      "month_pnl": 3071870.276368,
-      "weight": 38.76908799824813
+      "unrealized_pnl": 3014022.15543,
+      "notional": 15429343.707,
+      "equity": 6039647.39756,
+      "month_pnl": 3043515.36696,
+      "weight": 38.13754583435357
     },
     {
       "address": "0x10e14ba2d77263543be1bdb2851b0933ddf4f4bd",
@@ -158,11 +143,11 @@
       "entry": 63063.9,
       "leverage_type": "isolated",
       "leverage": 3.0,
-      "unrealized_pnl": -758390.6175,
-      "notional": 15323501.0253,
-      "equity": 4583931.468361,
-      "month_pnl": 2204031.898768,
-      "weight": 43.81739812796782
+      "unrealized_pnl": -819592.8183,
+      "notional": 15262298.8245,
+      "equity": 4522714.469583,
+      "month_pnl": 2175633.723344,
+      "weight": 43.77849302026975
     },
     {
       "address": "0x6859da14835424957a1e6b397d8026b1d9ff7e1e",
@@ -173,26 +158,26 @@
       "entry": 70810.5,
       "leverage_type": "cross",
       "leverage": 35.0,
-      "unrealized_pnl": 2457729.183958,
-      "notional": 13777436.73511,
-      "equity": 2219605.983616,
-      "month_pnl": 6362847.697692,
-      "weight": 46.9979602304322
+      "unrealized_pnl": 2517340.998558,
+      "notional": 13717824.92051,
+      "equity": 2283225.857117,
+      "month_pnl": 6308243.111385,
+      "weight": 46.97210377504193
     },
     {
       "address": "0x92cbb22a9b9fc01da9914c9b39ed904dd61b859c",
       "display_name": null,
       "side": "SHORT",
-      "size": -167.47699,
-      "abs_size": 167.47699,
+      "size": -164.82612,
+      "abs_size": 164.82612,
       "entry": 59949.7,
       "leverage_type": "cross",
       "leverage": 20.0,
-      "unrealized_pnl": -23480.940952,
-      "notional": 10063692.3291,
-      "equity": 1414403.056732,
-      "month_pnl": 1384165.432357,
-      "weight": 42.421825987568866
+      "unrealized_pnl": 12493.163492,
+      "notional": 9868799.10888,
+      "equity": 1340000.121446,
+      "month_pnl": 1386795.937051,
+      "weight": 42.427521852436456
     },
     {
       "address": "0x77eeda199553e33b246e4b4666849b9ad0972902",
@@ -203,11 +188,11 @@
       "entry": 57778.1,
       "leverage_type": "cross",
       "leverage": 40.0,
-      "unrealized_pnl": -365825.716723,
-      "notional": 9508613.9586,
-      "equity": 3089918.296755,
-      "month_pnl": 3924738.915412,
-      "weight": 45.548431930241456
+      "unrealized_pnl": -324841.675863,
+      "notional": 9467629.91774,
+      "equity": 3081251.331148,
+      "month_pnl": 3881591.01479,
+      "weight": 45.51526782160279
     },
     {
       "address": "0xebe126adabe1a8f08d3ce53b45e7cc994ca14070",
@@ -218,11 +203,11 @@
       "entry": 85057.0,
       "leverage_type": "isolated",
       "leverage": 20.0,
-      "unrealized_pnl": 3444766.95116,
-      "notional": 8291235.998,
-      "equity": 7205140.206766,
-      "month_pnl": 10803264.55411,
-      "weight": 18.636631597950092
+      "unrealized_pnl": 3476915.82516,
+      "notional": 8259087.124,
+      "equity": 7237297.087519,
+      "month_pnl": 10604293.231912,
+      "weight": 18.460669479223213
     },
     {
       "address": "0xc5f033a47dde827133850ced50009c3802c989ba",
@@ -233,11 +218,11 @@
       "entry": 73010.7,
       "leverage_type": "cross",
       "leverage": 20.0,
-      "unrealized_pnl": 1671109.053824,
-      "notional": 7771758.7779,
-      "equity": 1222470.058046,
-      "month_pnl": 2637276.683125,
-      "weight": 44.355773287366496
+      "unrealized_pnl": 1704606.899114,
+      "notional": 7738260.93261,
+      "equity": 1255975.408561,
+      "month_pnl": 2621634.61584,
+      "weight": 44.33792688543003
     },
     {
       "address": "0xe187055ff406f8cdf59fbae53ec20d4ecd9b771d",
@@ -248,11 +233,11 @@
       "entry": 64048.1,
       "leverage_type": "cross",
       "leverage": 40.0,
-      "unrealized_pnl": 489060.700767,
-      "notional": 7424529.3138,
-      "equity": 1708079.734964,
-      "month_pnl": 4394645.75026,
-      "weight": 45.887693131511035
+      "unrealized_pnl": 521679.701247,
+      "notional": 7391910.31332,
+      "equity": 1727873.532554,
+      "month_pnl": 4430633.89377,
+      "weight": 45.91216034589162
     },
     {
       "address": "0xda26ab2a88881523ce002477fdee2f4ac9eb572a",
@@ -263,11 +248,11 @@
       "entry": 75894.3,
       "leverage_type": "cross",
       "leverage": 40.0,
-      "unrealized_pnl": 1767987.69121,
-      "notional": 6722622.93764,
-      "equity": 1509735.882966,
-      "month_pnl": 5170413.100451,
-      "weight": 46.3753900202282
+      "unrealized_pnl": 1798305.55605,
+      "notional": 6692305.0728,
+      "equity": 1605776.718548,
+      "month_pnl": 5114867.20576,
+      "weight": 46.34298657243324
     },
     {
       "address": "0x3440f23a87f1950e7a88cd248fd270e92d1132c5",
@@ -278,11 +263,11 @@
       "entry": 71145.0,
       "leverage_type": "cross",
       "leverage": 40.0,
-      "unrealized_pnl": 1134271.374592,
-      "notional": 6165373.4088,
-      "equity": 868773.342197,
-      "month_pnl": 3726982.292098,
-      "weight": 45.393329086546416
+      "unrealized_pnl": 1158895.931392,
+      "notional": 6140748.852,
+      "equity": 891173.299816,
+      "month_pnl": 3698965.09118,
+      "weight": 45.37069171124716
     },
     {
       "address": "0x518ba266e68529bdac92731373a7c28e32804195",
@@ -293,11 +278,11 @@
       "entry": 62887.2,
       "leverage_type": "cross",
       "leverage": 20.0,
-      "unrealized_pnl": 278801.615835,
-      "notional": 5998157.01354,
-      "equity": 640751.245292,
-      "month_pnl": 835176.374442,
-      "weight": 40.906198217266635
+      "unrealized_pnl": 305651.288625,
+      "notional": 5971307.34075,
+      "equity": 667606.710146,
+      "month_pnl": 863259.538089,
+      "weight": 41.005415467910254
     },
     {
       "address": "0xfb1898bb5955fdd11704e397104c6a0e0725eb17",
@@ -308,51 +293,66 @@
       "entry": 74867.9,
       "leverage_type": "cross",
       "leverage": 40.0,
-      "unrealized_pnl": 1473010.814656,
-      "notional": 5990049.35027,
-      "equity": 1530723.239685,
-      "month_pnl": 7136832.721273,
-      "weight": 47.34233933866666
+      "unrealized_pnl": 1498928.386856,
+      "notional": 5964131.77807,
+      "equity": 1618023.992333,
+      "month_pnl": 7087405.015587,
+      "weight": 47.32148989902855
+    },
+    {
+      "address": "0x92df9c617bdfb1e5ec2f683d6e33bcacd3e617a0",
+      "display_name": null,
+      "side": "SHORT",
+      "size": -96.06617,
+      "abs_size": 96.06617,
+      "entry": 62011.0,
+      "leverage_type": "isolated",
+      "leverage": 13.0,
+      "unrealized_pnl": 210485.216365,
+      "notional": 5746678.2894,
+      "equity": 729049.781648,
+      "month_pnl": 217915.174364,
+      "weight": 36.87559723967374
     }
   ],
   "size_buckets": [
     {
       "label": "under 100k",
-      "long_count": 6,
+      "long_count": 7,
       "short_count": 20,
-      "notional_long": 123319.06155,
-      "notional_short": 577987.1863099999
+      "notional_long": 182641.80377000003,
+      "notional_short": 574745.50078
     },
     {
       "label": "100k\u20131m",
       "long_count": 12,
-      "short_count": 72,
-      "notional_long": 5330392.080267999,
-      "notional_short": 34521991.239884
+      "short_count": 73,
+      "notional_long": 5295753.1948,
+      "notional_short": 34479747.275340006
     },
     {
       "label": "1m\u201310m",
-      "long_count": 2,
-      "short_count": 62,
-      "notional_long": 4426762.851,
-      "notional_short": 182397515.31367597
+      "long_count": 3,
+      "short_count": 63,
+      "notional_long": 7100814.97161,
+      "notional_short": 192259836.71403608
     },
     {
       "label": "10m+",
       "long_count": 1,
-      "short_count": 11,
-      "notional_long": 15323501.0253,
-      "notional_short": 328352934.93670005
+      "short_count": 9,
+      "notional_long": 15262298.8245,
+      "notional_short": 270469265.561885
     }
   ],
   "notes": [],
-  "ts_utc": "2026-11-24T17:59:03Z",
-  "ts_ist": "24 Nov 2026, 11:29 PM IST (UTC+5:30)",
-  "btc_mark": 60091.0,
+  "ts_utc": "2026-11-24T19:10:35Z",
+  "ts_ist": "25 Nov 2026, 12:40 AM IST (UTC+5:30)",
+  "btc_mark": 59863.0,
   "coin": "BTC",
   "method": {
     "cohort_source": "portfolio.perpMonth",
-    "cohort_built_at_ist": "24 Nov 2026, 11:04 PM IST (UTC+5:30)",
+    "cohort_built_at_ist": "25 Nov 2026, 12:39 AM IST (UTC+5:30)",
     "filters": {
       "min_equity": 10000.0,
       "min_month_pnl": 0.0,
@@ -370,17 +370,17 @@
   },
   "leaderboard": {
     "url": "https://stats-data.hyperliquid.xyz/Mainnet/leaderboard",
-    "etag": "\"5db90e4f29e780f357d29eeca38a7271-5\"",
-    "last_modified": "Tue, 24 Nov 2026 17:40:34 GMT",
+    "etag": "\"5b37b2b806137b2b69ed83cd1b58154a-5\"",
+    "last_modified": "Tue, 24 Nov 2026 18:40:40 GMT",
     "not_modified": false,
-    "bytes": 38114279
+    "bytes": 38125143
   },
   "timings": {
-    "leaderboard_sec": 0.77,
-    "portfolio_sec": 0.0,
-    "cohort_reused": true,
-    "clearinghouse_sec": 11.93,
-    "sweep_sec": 12.86
+    "leaderboard_sec": 0.79,
+    "portfolio_sec": 640.29,
+    "cohort_reused": false,
+    "clearinghouse_sec": 50.83,
+    "sweep_sec": 692.07
   },
   "disclaimer": "This is a descriptive reading of public positions, not financial advice and not a prediction. It can be wrong. Do not trade on it.",
   "repo": "https://github.com/PrafullJ0shi/hyperliquid-btc-signal",
@@ -435,6 +435,19 @@
       "n_long": 21,
       "n_short": 165,
       "n_flat": 314,
+      "n_traders": 500
+    },
+    {
+      "ts_utc": "2026-11-24T19:10:35Z",
+      "ts_ist": "25 Nov 2026, 12:40 AM IST (UTC+5:30)",
+      "btc_mark": 59863.0,
+      "p_long": 0.0897033322482786,
+      "ci_low": 0.04671242210588015,
+      "ci_high": 0.14136583708325617,
+      "verdict": "SHORT",
+      "n_long": 23,
+      "n_short": 165,
+      "n_flat": 312,
       "n_traders": 500
     }
   ]
