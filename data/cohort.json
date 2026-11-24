@@ -6015,8 +6015,8 @@
     "top_n": 500
   },
   "last_positions": {
-    "ts_utc": "2026-11-24T21:36:53Z",
-    "mark": 59897.0,
+    "ts_utc": "2026-11-24T21:39:28Z",
+    "mark": 59875.0,
     "positions": {
       "0x45d26f28196d226497130c4bac709d808fed4029": -436.0,
       "0xdf954bbe619273a56e0cfa90dad8382195dc7d72": -629.82901,
@@ -6025,7 +6025,7 @@
       "0x218a65e21eddeece7a9df38c6bbdd89f692b7da2": -869.38585,
       "0x3dc908374e11623d8eb9f07dfc7a2e5e803a54b0": -20.00538,
       "0xfe7ce058edc7cfcde9ef8262ba51f8d4796ab7ae": -45.8831,
-      "0xca4903c207a0df58bf37d4bc8bbc5210726f53c8": -490.1909,
+      "0xca4903c207a0df58bf37d4bc8bbc5210726f53c8": -490.10649,
       "0x024294c53a69c1e6b39810b3fac87385752fffa1": 0.0,
       "0x15a4f009bb324a3fb9e36137136b201e3fe0dfdb": 0.0,
       "0xba5d9cc840745aeeeeedac5712e32f13ab8ea352": -28.5562,
