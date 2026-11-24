@@ -133,7 +133,13 @@ seeded with the simple mean of the first $n$ closes. Spans 20, 50, and 200 are c
 
 ### 7. Regime detector `[intel.regime]`
 
-Realised volatility over 24 hours, annualised, is $\mathrm{RV}_{24} = \operatorname{sd}(\ln c_t - \ln c_{t-1}) \sqrt{24 \cdot 365}$. Its percentile $\pi$ is taken against every rolling 24-hour window in the last 35 days. The Kaufman efficiency ratio over 48 hours is
+Realised volatility over 24 hours, annualised, is
+
+$$
+\mathrm{RV}_{24} = \operatorname{sd}\left(\ln c_t - \ln c_{t-1}\right) \sqrt{24 \cdot 365}.
+$$
+
+Its percentile $\pi$ is taken against every rolling 24-hour window in the last 35 days. The Kaufman efficiency ratio over 48 hours is
 
 $$
 \mathrm{ER} = \frac{|c_t - c_{t-48}|}{\sum_{k=1}^{48} |c_{t-k+1} - c_{t-k}|} \in [0, 1].
@@ -202,10 +208,10 @@ The total pseudo-count tends to $K_t$, so repeated looks at the same positions d
 
 ### 14. Backtesting `[intel.accuracy]`, `[intel.backtest]`
 
-**Live accuracy tracker.** Each stored verdict at time $t$ is scored against the BTC price at $t+h$ for $h \in \{1, 4, 24\}$ hours, taken from the 15-minute candle containing $t+h$ (or the nearest stored mark within 20 minutes). With $y = 1$ if price rose:
+**Live accuracy tracker.** Each stored verdict at time $t$ is scored against the BTC price at $t+h$ for $h \in \{1, 4, 24\}$ hours, taken from the 15-minute candle containing $t+h$ (or the nearest stored mark within 20 minutes). Let $y = 1$ if price rose. Below, the denominator counts LONG and SHORT verdicts, and the numerator counts LONG verdicts followed by a rise plus SHORT verdicts followed by a fall:
 
 $$
-\text{hit rate} = \frac{\#\{\text{LONG and } y=1\} + \#\{\text{SHORT and } y=0\}}{\#\{\text{LONG or SHORT}\}}, \qquad \mathrm{BS} = \frac{1}{n}\sum (p_t - y)^2
+\text{hit rate} = \frac{n_{L,1} + n_{S,0}}{n_L + n_S}, \qquad \mathrm{BS} = \frac{1}{n}\sum (p_t - y)^2
 $$
 
 Brier scores are reported for the raw P(long) and the posterior, beside a coin (0.25) and the climatology baseline $\bar y(1-\bar y)$. Because snapshots are 30 minutes apart, rows overlap at 4h and 24h; the table shows an approximate independent count, the scored span divided by the horizon.
