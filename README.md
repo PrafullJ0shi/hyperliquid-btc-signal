@@ -102,7 +102,7 @@ Each position's liquidation price is placed in 1% bins of $\ell_i / m - 1$ withi
 Each sweep stores every wallet's signed BTC size $s_i$ in `data/cohort.json`. On the next sweep, for wallets present both times, the net weight flow is
 
 $$
-F_t = \frac{\sum_i \left( \operatorname{sgn}(s_i^{t}) w_i^{t} - \operatorname{sgn}(s_i^{t-1}) w_i^{t-1} \right)}{\sum_i w_i^{t}}
+F_t = \frac{\sum_i \left( \mathrm{sgn}(s_i^{t}) w_i^{t} - \mathrm{sgn}(s_i^{t-1}) w_i^{t-1} \right)}{\sum_i w_i^{t}}
 $$
 
 with both weights computed from current PnL and equity, so only size and side changes move it. Momentum is $\Delta_{3h} = p_t - p_{t-3h}$ and $\Delta_{24h} = p_t - p_{t-24h}$ (nearest stored snapshot).
@@ -136,7 +136,7 @@ seeded with the simple mean of the first $n$ closes. Spans 20, 50, and 200 are c
 Realised volatility over 24 hours, annualised, is
 
 $$
-\mathrm{RV}_{24} = \operatorname{sd}\left(\ln c_t - \ln c_{t-1}\right) \sqrt{24 \cdot 365}.
+\mathrm{RV}_{24} = \mathrm{sd}\left(\ln c_t - \ln c_{t-1}\right) \sqrt{24 \cdot 365}.
 $$
 
 Its percentile $\pi$ is taken against every rolling 24-hour window in the last 35 days. The Kaufman efficiency ratio over 48 hours is
@@ -159,7 +159,7 @@ The score is the plain mean of the available components, each on 0 to 100 (100 i
 | Leader skew | $100 \cdot \hat p_t$, the Bayesian posterior mean |
 | Volatility | $100 (1 - \pi)$ |
 | Momentum | $50 + 50 \tanh(z/2)$ with $z = r_{7d} / (\sigma_d \sqrt 7)$ |
-| Open interest | $50 + 50 \tanh\left(\operatorname{sgn}(r_{24h}) \cdot \Delta \mathrm{OI}_{24h} / 0.05\right)$, once 24 hours of sweeps are stored |
+| Open interest | $50 + 50 \tanh\left(\mathrm{sgn}(r_{24h}) \cdot \Delta \mathrm{OI}_{24h} / 0.05\right)$, once 24 hours of sweeps are stored |
 
 Bands: under 25 extreme fear, 25 to 44 fear, 45 to 55 neutral, 56 to 75 greed, above 75 extreme greed. A missing component is left out, not imputed.
 
@@ -223,7 +223,7 @@ Brier scores are reported for the raw P(long) and the posterior, beside a coin (
 With $x_t = p_t - p_{t-1}$ and $y_t = \ln m_t - \ln m_{t-1}$ on a regular grid (30 minutes for live snapshots, 1 hour for the reconstructed series), the cross-correlation is
 
 $$
-r_k = \operatorname{corr}(x_t,\; y_{t+k}), \qquad k = -6, \dots, 6.
+r_k = \mathrm{corr}(x_t,\; y_{t+k}), \qquad k = -6, \dots, 6.
 $$
 
 Positive $k$ means the leaders' positioning changed first. The noise band is $\pm 1.96 / \sqrt{n}$. Gaps are skipped pairwise.
