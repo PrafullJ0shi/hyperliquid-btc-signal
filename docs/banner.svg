@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="560" viewBox="0 0 1600 560" role="img" aria-label="Bitcoin positioning among Hyperliquid one-month leaders.">
+  <title>HL–BTC–SIG — Bitcoin positioning among Hyperliquid one-month leaders</title>
+  <rect width="1600" height="560" fill="#EFECE6"/>
+  <!-- registration marks -->
+  <path d="M24 24h22M24 24v22" stroke="#141414" stroke-width="1" fill="none"/>
+  <path d="M1576 24h-22M1576 24v22" stroke="#141414" stroke-width="1" fill="none"/>
+  <path d="M24 536h22M24 536v-22" stroke="#141414" stroke-width="1" fill="none"/>
+  <path d="M1576 536h-22M1576 536v-22" stroke="#141414" stroke-width="1" fill="none"/>
+  <line x1="64" y1="72" x2="1536" y2="72" stroke="#141414" stroke-width="1"/>
+  <text x="64" y="56" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="16" letter-spacing="3.2">HL–BTC–SIG  ·  REV 0.1  ·  PUBLIC MARKET DATA</text>
+  <text x="1536" y="56" text-anchor="end" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="14">OPEN SOURCE</text>
+
+  <!-- wireframe sphere (static drawing of Fig. 1) -->
+  <g transform="translate(220,310)">
+    <circle cx="0" cy="0" r="150" fill="none" stroke="#141414" stroke-width="1.2"/>
+    <ellipse cx="0" cy="0" rx="150" ry="48" fill="none" stroke="#141414" stroke-width="0.9"/>
+    <ellipse cx="0" cy="0" rx="150" ry="100" fill="none" stroke="#B7B3A9" stroke-width="0.7"/>
+    <ellipse cx="0" cy="0" rx="48" ry="150" fill="none" stroke="#141414" stroke-width="0.8"/>
+    <ellipse cx="0" cy="0" rx="100" ry="150" fill="none" stroke="#B7B3A9" stroke-width="0.7"/>
+    <!-- accent consensus ring, tilted toward LONG -->
+    <ellipse cx="0" cy="0" rx="150" ry="48" fill="none" stroke="#8C1D12" stroke-width="2.2" transform="rotate(-28)"/>
+    <circle cx="0" cy="-150" r="2.4" fill="#141414"/>
+    <circle cx="0" cy="150" r="2.4" fill="#141414"/>
+    <text x="0" y="-164" text-anchor="middle" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="13">LONG</text>
+    <text x="0" y="178" text-anchor="middle" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="13">SHORT</text>
+    <!-- scale -->
+    <line x1="190" y1="150" x2="190" y2="-150" stroke="#141414" stroke-width="1"/>
+    <line x1="186" y1="150" x2="194" y2="150" stroke="#141414" stroke-width="1"/>
+    <line x1="186" y1="30" x2="194" y2="30" stroke="#141414" stroke-width="1"/>
+    <line x1="186" y1="0" x2="194" y2="0" stroke="#141414" stroke-width="1"/>
+    <line x1="186" y1="-30" x2="194" y2="-30" stroke="#141414" stroke-width="1"/>
+    <line x1="186" y1="-150" x2="194" y2="-150" stroke="#141414" stroke-width="1"/>
+    <text x="202" y="154" fill="#141414" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11">0.00</text>
+    <text x="202" y="4" fill="#141414" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11">0.50</text>
+    <text x="202" y="-146" fill="#141414" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11">1.00</text>
+    <polygon points="178,-42 186,-47 186,-37" fill="#8C1D12"/>
+  </g>
+
+  <line x1="520" y1="110" x2="520" y2="500" stroke="#B7B3A9" stroke-width="1"/>
+
+  <text x="568" y="200" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="42" font-weight="500">Bitcoin positioning among</text>
+  <text x="568" y="252" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="42" font-weight="500">Hyperliquid one-month leaders</text>
+  <text x="568" y="304" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="20">A public-data instrument for a single reading: long, short, or</text>
+  <text x="568" y="332" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="20">neutral on Bitcoin, with a stated interval and a sample size.</text>
+  <text x="568" y="370" fill="#8C1D12" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="18" letter-spacing="2">FIG. 1  ·  CONSENSUS INCLINATION</text>
+  <text x="568" y="430" fill="#3F3F3A" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="16">The accent ring tilts toward LONG as weighted P(long) rises. This is not financial advice and not a forecast.</text>
+
+  <line x1="64" y1="500" x2="1536" y2="500" stroke="#141414" stroke-width="1"/>
+  <text x="64" y="528" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="14">PRAFULL JOSHI  ·  MIT LICENSE  ·  HYPERLIQUID PUBLIC API ONLY</text>
+</svg>

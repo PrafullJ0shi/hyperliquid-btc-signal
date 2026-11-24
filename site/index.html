@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BTC consensus — Hyperliquid one-month leaders</title>
+  <meta name="description" content="A public-data reading of whether the top 500 one-month leaders on Hyperliquid are, on balance, long or short Bitcoin. Not financial advice.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="sheet">
+    <header class="dochead">
+      <div>
+        <div class="series">Hl–btc–sig  ·  Rev 0.1  ·  Public market data</div>
+        <div>Series: Bitcoin positioning among Hyperliquid one-month leaders</div>
+      </div>
+      <div class="issued">
+        <div>Issued  <span id="issued">—</span></div>
+        <div id="freshness">Data age  —</div>
+        <div>BTC mark  <span id="btc-mark">—</span></div>
+      </div>
+    </header>
+
+    <h1>Bitcoin positioning among Hyperliquid one-month leaders</h1>
+    <p class="lede">
+      A weighted long or short reading of Bitcoin perpetual positions held by the top 500 wallets ranked on one-month perp PnL.
+      Source: Hyperliquid public endpoints only.
+      <a href="https://github.com/PrafullJ0shi/hyperliquid-btc-signal">Source repository</a>.
+    </p>
+
+    <p id="status" class="status" hidden></p>
+
+    <section class="primary" aria-label="Current reading">
+      <figure class="fig fig-sphere">
+        <canvas id="inclination" width="420" height="420" role="img" aria-label="Fig. 1. Consensus inclination sphere."></canvas>
+        <svg id="sphere-fallback" hidden width="320" height="320" viewBox="0 0 320 320" aria-hidden="true">
+          <circle cx="150" cy="160" r="110" fill="none" stroke="#141414" stroke-width="1.1"/>
+          <ellipse cx="150" cy="160" rx="110" ry="36" fill="none" stroke="#141414" stroke-width="1"/>
+          <ellipse cx="150" cy="160" rx="36" ry="110" fill="none" stroke="#141414" stroke-width="0.8"/>
+          <ellipse cx="150" cy="160" rx="110" ry="36" fill="none" stroke="#8C1D12" stroke-width="1.8" transform="rotate(-25 150 160)"/>
+          <text x="150" y="36" text-anchor="middle" font-size="11" font-family="IBM Plex Sans, sans-serif" fill="#141414">LONG</text>
+          <text x="150" y="302" text-anchor="middle" font-size="11" font-family="IBM Plex Sans, sans-serif" fill="#141414">SHORT</text>
+        </svg>
+        <figcaption>
+          Fig. 1. Consensus inclination. The accent ring tilts toward LONG as weighted P(long) rises, and toward SHORT as it falls.
+          The equator is a neutral reading. A hairline scale at the right marks the decision thresholds 0.40 and 0.60.
+        </figcaption>
+      </figure>
+
+      <div class="reading">
+        <p class="kicker">Verdict</p>
+        <p class="verdict is-neutral" id="verdict">—</p>
+        <dl class="metrics">
+          <dt>P(long)</dt>
+          <dd id="p-long">—</dd>
+          <dt>95% interval</dt>
+          <dd id="interval">—</dd>
+          <dt>Sample</dt>
+          <dd id="sample">—</dd>
+        </dl>
+        <p class="note" id="reading-note"></p>
+      </div>
+    </section>
+
+    <figure class="fig fig-strip">
+      <svg id="history-chart" viewBox="0 0 1000 72" width="100%" height="72" role="img" aria-label="Fig. 2. History of P(long)."></svg>
+      <p class="note" id="history-note" hidden></p>
+      <figcaption>
+        Fig. 2. History of P(long) from stored snapshots. The solid hairline is 0.50; dashed lines mark 0.40 and 0.60.
+        The strip fills as later sweeps are stored.
+      </figcaption>
+    </figure>
+
+    <div class="counts">
+      <div>
+        <h2 class="block-title">Counts and notional</h2>
+        <table class="data mono" id="counts-table">
+          <thead>
+            <tr><th></th><th>Long</th><th>Short</th><th>Flat</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Wallets</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>BTC notional</td><td>—</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <div class="stack-rule" aria-hidden="true">
+          <div class="long" id="stack-long" style="width:0%"></div>
+          <div class="short" id="stack-short" style="width:0%"></div>
+        </div>
+        <p class="note" id="stack-caption"></p>
+      </div>
+      <div>
+        <h2 class="block-title">By position size</h2>
+        <table class="data mono" id="buckets-table">
+          <thead>
+            <tr>
+              <th>Notional band</th>
+              <th>Long</th>
+              <th>Short</th>
+              <th>Long $</th>
+              <th>Short $</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="5">Waiting for a snapshot.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <figure class="fig">
+      <h2 class="block-title">Largest BTC positions in the cohort</h2>
+      <table class="data positions" id="positions-table">
+        <thead>
+          <tr>
+            <th>Address</th>
+            <th>Side</th>
+            <th>Size (BTC)</th>
+            <th>Entry</th>
+            <th>Leverage</th>
+            <th>uPnL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="6">Waiting for a snapshot.</td></tr>
+        </tbody>
+      </table>
+      <figcaption>
+        Fig. 3. The twenty largest Bitcoin positions, by notional, among the 500 one-month leaders.
+        Addresses are shortened. Figures are taken from the latest <span class="mono">clearinghouseState</span> poll.
+      </figcaption>
+    </figure>
+
+    <footer class="colophon">
+      <p>
+        Method. Each wallet with a BTC position votes long or short. The vote is weighted by
+        log(1 + one-month perp PnL), shrunk for equity below $100,000, and scaled by BTC notional over equity (capped at 3).
+        P(long) is the share of that weight on the long side. The interval is a 95% bootstrap over traders.
+        Verdict is LONG at or above 0.60, SHORT at or below 0.40, otherwise NEUTRAL. Flats do not vote.
+      </p>
+      <p>
+        The machine-readable snapshot is
+        <a href="data/signal.json"><code>data/signal.json</code></a>.
+        The method, filters, and limitations are in the
+        <a href="https://github.com/PrafullJ0shi/hyperliquid-btc-signal">repository README</a>.
+      </p>
+      <p class="disclaimer">
+        This is not financial advice and not a forecast. It is a descriptive reading of public positions at the issue time.
+        The figure can be wrong. Wallets can be market makers, copy one another, or change between polls. Do not trade on this page.
+      </p>
+      <div class="sheet-foot-marks"></div>
+    </footer>
+  </div>
+  <noscript>
+    <p style="max-width:1040px;margin:16px auto;padding:0 28px;font-family:sans-serif;">
+      This plate needs JavaScript only to load <code>data/signal.json</code> and to draw Fig. 1.
+      Open the JSON file directly for the latest verdict, or enable JavaScript.
+    </p>
+  </noscript>
+  <script src="js/inclination.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
