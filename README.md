@@ -90,7 +90,9 @@ flowchart LR
   <img src="docs/architecture.svg" alt="Data flow from the public leaderboard and info endpoints, through the weighted signal, into signal.json and the GitHub Pages plate." width="100%">
 </p>
 
-A GitHub Actions workflow runs the Python sweep on a 30-minute cron (and on manual dispatch). The heavier `portfolio` ranking is reused for up to an hour. The workflow writes `data/signal.json`, deploys the `site/` directory to GitHub Pages, and commits the snapshot so the sparkline has a history. No paid API and no private node are required.
+A GitHub Actions workflow is written to run the Python sweep on a 30-minute cron (and on manual dispatch). The heavier `portfolio` ranking is reused for up to an hour. The job writes `data/signal.json` and can publish the `site/` directory. No paid API and no private node are required.
+
+The first public copy of this repository was pushed without `.github/workflows/sweep.yml` because the token used to publish it lacked the `workflow` scope. The complete workflow file is in [`docs/github-workflow-sweep.yml`](docs/github-workflow-sweep.yml). To turn on the half-hour refresh, copy that file to `.github/workflows/sweep.yml` in the GitHub UI or push it with a token that has the `workflow` scope. Until then, the [live plate](https://prafullj0shi.github.io/hyperliquid-btc-signal/) shows the snapshot on the `gh-pages` branch.
 
 ## How to run it locally
 
