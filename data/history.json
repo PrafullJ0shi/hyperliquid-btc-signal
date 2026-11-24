@@ -63,5 +63,18 @@
     "n_short": 165,
     "n_flat": 312,
     "n_traders": 500
+  },
+  {
+    "ts_utc": "2026-11-24T20:03:49Z",
+    "ts_ist": "25 Nov 2026, 1:33 AM IST (UTC+5:30)",
+    "btc_mark": 59563.0,
+    "p_long": 0.09323841875805888,
+    "ci_low": 0.049197765677668086,
+    "ci_high": 0.14608207392552916,
+    "verdict": "SHORT",
+    "n_long": 24,
+    "n_short": 164,
+    "n_flat": 312,
+    "n_traders": 500
   }
 ]
