@@ -57,11 +57,11 @@ $$
 \theta \sim \mathrm{Beta}\bigl(1 + n_{\mathrm{long}},\, 1 + n_{\mathrm{short}}\bigr).
 $$
 
-The decision rule, applied to the point estimate, is
+The decision rule, applied to the point estimate, is:
 
-$$
-\mathrm{verdict} = \begin{cases} \mathrm{LONG} & \text{if } P(\mathrm{long}) \ge 0.60 \\[4pt] \mathrm{SHORT} & \text{if } P(\mathrm{long}) \le 0.40 \\[4pt] \mathrm{NEUTRAL} & \text{otherwise.} \end{cases}
-$$
+- LONG if $P(\mathrm{long}) \ge 0.60$
+- SHORT if $P(\mathrm{long}) \le 0.40$
+- NEUTRAL otherwise.
 
 When the bootstrap interval includes 0.5, the plate states that the point verdict is weakly held.
 

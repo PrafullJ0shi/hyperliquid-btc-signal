@@ -386,6 +386,13 @@ table.positions td:first-child { font-family: "IBM Plex Mono", ui-monospace, mon
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
+  table.positions {
+    min-width: 36em;
+  }
+  table.positions th,
+  table.positions td {
+    white-space: nowrap;
+  }
   .sheet-foot-marks::before { left: -8px; }
   .sheet-foot-marks::after { right: -8px; }
 }
