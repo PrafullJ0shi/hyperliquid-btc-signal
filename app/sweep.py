@@ -14,18 +14,22 @@ from typing import Any, Optional
 from . import config
 from .hl_client import (
     HyperliquidClient,
+    btc_ctx_from_ctxs,
     btc_mark_from_ctxs,
     extract_btc_position,
     window_from_row,
     window_pnl_from_portfolio,
 )
+from . import intel as I
+from .layer import build_intel, fetch_market, refresh_backtest
 from .signal import compute_signal
 from .store import (
     load_cohort,
-    history_from_json,
-    load_history,
-    merged_history,
+    load_history_json,
+    load_latest_json,
+    load_x_sentiment,
     save_snapshot,
+    slim_row,
     write_cohort,
     write_json_files,
 )
@@ -160,11 +164,13 @@ async def build_cohort(
 async def poll_positions(
     client: HyperliquidClient,
     traders: list[dict[str, Any]],
-) -> tuple[list[dict[str, Any]], Optional[float]]:
+) -> tuple[list[dict[str, Any]], Optional[float], dict[str, Any]]:
     mark = None
+    ctx: dict[str, Any] = {}
     try:
         ctxs = await client.meta_and_asset_ctxs()
         mark = btc_mark_from_ctxs(ctxs)
+        ctx = btc_ctx_from_ctxs(ctxs) or {}
     except Exception as exc:  # noqa: BLE001
         log.warning("metaAndAssetCtxs failed: %s; trying allMids", exc)
         try:
@@ -204,12 +210,16 @@ async def poll_positions(
             "leverage": extracted.get("leverage"),
             "unrealized_pnl": extracted.get("unrealized_pnl"),
             "liquidation_px": extracted.get("liquidation_px"),
+            "total_ntl": extracted.get("total_ntl"),
+            "other_signed_ntl": extracted.get("other_signed_ntl") or 0.0,
+            "n_positions": extracted.get("n_positions") or 0,
+            "turnover": row.get("turnover"),
             "mark": mark,
         }
 
     log.info("Polling clearinghouseState for %s wallets", len(traders))
     observed = await _map_progress("clearinghouseState", traders, one)
-    return observed, mark
+    return observed, mark, ctx
 
 
 def assemble_payload(
@@ -264,6 +274,8 @@ def assemble_payload(
 async def run_sweep(*, force_portfolio: bool = False) -> dict[str, Any]:
     started = time.monotonic()
     timings: dict[str, Any] = {}
+    previous_cohort = load_cohort() or {}
+    previous_payload = load_latest_json() or {}
     async with HyperliquidClient() as client:
         t0 = time.monotonic()
         rows, lb_meta = await client.fetch_leaderboard()
@@ -278,7 +290,7 @@ async def run_sweep(*, force_portfolio: bool = False) -> dict[str, Any]:
         filtered = filter_leaderboard(rows)
         log.info("After filters: %s wallets", len(filtered))
 
-        cohort = None if force_portfolio else load_cohort()
+        cohort = None if force_portfolio else previous_cohort
         if cohort_is_fresh(cohort):
             log.info(
                 "Reusing cohort built %s (%s traders)",
@@ -292,19 +304,26 @@ async def run_sweep(*, force_portfolio: bool = False) -> dict[str, Any]:
             cohort = await build_cohort(client, filtered)
             timings["portfolio_sec"] = round(time.monotonic() - t1, 2)
             timings["cohort_reused"] = False
-            write_cohort(cohort)
 
         traders = cohort.get("traders") or []
         t2 = time.monotonic()
-        observed, mark = await poll_positions(client, traders)
+        observed, mark, ctx = await poll_positions(client, traders)
         timings["clearinghouse_sec"] = round(time.monotonic() - t2, 2)
+
+        t3 = time.monotonic()
+        now_ms = int(time.time() * 1000)
+        market = await fetch_market(client, now_ms)
+        prior_bt = (previous_payload.get("intel") or {}).get("backtest")
+        backtest = await refresh_backtest(client, observed, market.get("candles_1h") or [], prior_bt, now_ms)
+        timings["market_sec"] = round(time.monotonic() - t3, 2)
         timings["sweep_sec"] = round(time.monotonic() - started, 2)
         log.info(
-            "BTC mark %s; sweep wall time %.1fs (portfolio %.1fs, positions %.1fs)",
+            "BTC mark %s; sweep wall time %.1fs (portfolio %.1fs, positions %.1fs, market %.1fs)",
             mark,
             timings["sweep_sec"],
             timings["portfolio_sec"],
             timings["clearinghouse_sec"],
+            timings["market_sec"],
         )
 
     signal = compute_signal(observed)
@@ -317,15 +336,36 @@ async def run_sweep(*, force_portfolio: bool = False) -> dict[str, Any]:
         timings=timings,
         issued=issued,
     )
-    prior = merged_history()
+    history = load_history_json()
+    intel, row_extra = build_intel(
+        payload=payload,
+        observed=observed,
+        ctx=ctx,
+        market=market,
+        history=history,
+        prev_positions=previous_cohort.get("last_positions"),
+        backtest=backtest,
+        x_raw=load_x_sentiment(),
+        now_ms=int(issued.timestamp() * 1000),
+    )
+    payload["intel"] = intel
     save_snapshot(payload)
-    history = load_history()
-    # On a fresh checkout the database holds only this row; keep prior JSON history.
-    if prior:
-        seen = {h.get("ts_utc") for h in history}
-        combined = [h for h in prior if h.get("ts_utc") not in seen] + history
-        history = combined[-config.HISTORY_MAX_POINTS:]
+    post_by_ts = row_extra.pop("_post_by_ts", {})
+    for h in history:
+        if h.get("post") is None and h.get("ts_utc") in post_by_ts:
+            h["post"] = post_by_ts[h["ts_utc"]]
+    row = {**slim_row(payload), **row_extra}
+    history = [h for h in history if h.get("ts_utc") != row["ts_utc"]] + [row]
+    history = history[-config.HISTORY_MAX_POINTS:]
     write_json_files(payload, history)
+
+    cohort = dict(cohort)
+    cohort["last_positions"] = {
+        "ts_utc": payload["ts_utc"],
+        "mark": mark,
+        "positions": I.compact_positions(observed),
+    }
+    write_cohort(cohort)
     log.info(
         "Verdict %s  P(long)=%s  CI=[%s, %s]  n=%s (L %s / S %s / F %s)",
         payload["verdict"],

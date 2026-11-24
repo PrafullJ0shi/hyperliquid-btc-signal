@@ -12,7 +12,7 @@
   <div class="sheet">
     <header class="dochead">
       <div>
-        <div class="series">Hl–btc–sig  ·  Rev 0.1  ·  Public market data</div>
+        <div class="series">Hl–btc–sig  ·  Rev 1.0  ·  Public market data</div>
         <div>Series: Bitcoin positioning among Hyperliquid one-month leaders</div>
       </div>
       <div class="issued">
@@ -56,19 +56,35 @@
           <dd id="p-long">—</dd>
           <dt>95% interval</dt>
           <dd id="interval">—</dd>
+          <dt>Posterior</dt>
+          <dd id="posterior">—</dd>
           <dt>Sample</dt>
           <dd id="sample">—</dd>
+          <dt>Integrity</dt>
+          <dd id="integrity-mini">—</dd>
+          <dt>Flip status</dt>
+          <dd id="flip-mini">—</dd>
         </dl>
         <p class="note" id="reading-note"></p>
       </div>
     </section>
 
-    <figure class="fig fig-strip">
-      <svg id="history-chart" viewBox="0 0 1000 72" width="100%" height="72" role="img" aria-label="Fig. 2. History of P(long)."></svg>
+    <section class="readout" aria-labelledby="readout-title">
+      <h2 class="block-title" id="readout-title">Table 1. Instrument readout</h2>
+      <table class="board" id="board">
+        <tbody>
+          <tr><th scope="row">Market change watch</th><td class="val">—</td><td class="why">Waiting for a snapshot.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <figure class="fig fig-wide" id="fig-history">
+      <h2 class="block-title">History of P(long), posterior, and BTC</h2>
+      <div class="chart" id="chart-history" style="height:200px"></div>
       <p class="note" id="history-note" hidden></p>
       <figcaption>
-        Fig. 2. History of P(long) from stored snapshots. The solid hairline is 0.50; dashed lines mark 0.40 and 0.60.
-        The strip fills as later sweeps are stored.
+        Fig. 2. Stored snapshots. Accent: raw weighted P(long). Ink, dashed: Bayesian posterior mean. Grey: BTC mark on the right scale.
+        Dashed hairlines mark the decision thresholds 0.40 and 0.60. Times are IST (UTC+5:30).
       </figcaption>
     </figure>
 
@@ -132,6 +148,189 @@
       </figcaption>
     </figure>
 
+
+    <h2 class="part-title" id="intel">Market intelligence</h2>
+    <p class="lede part-lede">
+      Context computed in the same sweep from public Hyperliquid data: price structure, leverage, liquidations, funding,
+      flows between sweeps, and checks on how far the reading can be trusted. Every method is written out in the
+      <a href="https://github.com/PrafullJ0shi/hyperliquid-btc-signal#methodology">README methodology</a>.
+    </p>
+
+    <section class="pair" aria-label="Price action and EMA study">
+      <figure class="fig fig-wide">
+        <h3 class="block-title">Price action and EMA study, 1h</h3>
+        <div class="chart" id="chart-price" style="height:240px"></div>
+        <figcaption>
+          Fig. 4. BTC hourly candles for seven days. Hollow body: close above open; filled body: close below open.
+          EMA 20 (thin), EMA 50 (dashed), EMA 200 (heavy grey). Accent tick at right: current mark.
+        </figcaption>
+      </figure>
+      <div class="side">
+        <div class="chart" id="chart-daily" style="height:120px"></div>
+        <p class="cap-small">Daily candles, 180 days, with the same EMAs.</p>
+        <table class="data mono" id="pa-table"><tbody><tr><td>Waiting for a snapshot.</td></tr></tbody></table>
+      </div>
+    </section>
+
+    <section class="pair" aria-label="Regime and fear and greed">
+      <div>
+        <h3 class="block-title">Regime detector</h3>
+        <p class="big-read" id="regime-label">—</p>
+        <p class="note" id="regime-detail"></p>
+        <table class="data mono" id="regime-table"><tbody></tbody></table>
+      </div>
+      <figure class="fig">
+        <h3 class="block-title">Fear and greed meter</h3>
+        <div class="chart" id="chart-fg" style="height:64px"></div>
+        <table class="data" id="fg-table"><tbody></tbody></table>
+        <figcaption>Fig. 5. Composite 0–100, the plain mean of the components shown. 0 is extreme fear, 100 extreme greed.</figcaption>
+      </figure>
+    </section>
+
+    <figure class="fig fig-wide">
+      <h3 class="block-title">Liquidation map</h3>
+      <div class="chart" id="chart-liq" style="height:200px"></div>
+      <p class="note wide" id="liq-note"></p>
+      <figcaption>
+        Fig. 6. Cohort BTC notional by liquidation price, in 1% bins within ±25% of the mark (accent rule).
+        Filled bars: longs, which liquidate below the mark. Open bars: shorts, which liquidate above it.
+      </figcaption>
+    </figure>
+
+    <section class="pair" aria-label="Funding and open interest">
+      <figure class="fig fig-wide">
+        <h3 class="block-title">Funding and open interest</h3>
+        <div class="chart" id="chart-funding" style="height:150px"></div>
+        <div class="chart" id="chart-oi" style="height:90px"></div>
+        <figcaption>
+          Fig. 7. Top: BTC funding, 8-hour means over 30 days, annualised (filled: longs pay; open: shorts pay).
+          Bottom: open interest in USD from stored sweeps, with the crowd's P(long) in accent.
+        </figcaption>
+      </figure>
+      <div class="side">
+        <table class="data mono" id="fo-table"><tbody></tbody></table>
+        <p class="note" id="fo-reading"></p>
+      </div>
+    </section>
+
+    <section aria-label="Flip detector and position changes" class="block">
+      <h3 class="block-title">Flip detector: are the leaders changing sides?</h3>
+      <p class="big-read" id="flip-label">—</p>
+      <p class="note wide" id="flip-text"></p>
+      <ul class="signals" id="watch-list"></ul>
+      <figure class="fig">
+        <table class="data positions" id="feed-table"><tbody><tr><td>Waiting for a snapshot.</td></tr></tbody></table>
+        <figcaption id="feed-caption">
+          Fig. 8. Position-change feed: the largest BTC opens, closes, flips, adds, and cuts since the previous sweep,
+          by change in notional. Only wallets present in both sweeps are compared.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="pair" aria-label="Cohort risk grade">
+      <figure class="fig">
+        <h3 class="block-title">Cohort risk grade</h3>
+        <p class="big-read"><span id="risk-grade">—</span> <span class="sub" id="risk-sub"></span></p>
+        <div class="chart" id="chart-risk" style="height:150px"></div>
+        <figcaption>
+          Fig. 9. BTC notional by risk grade, longs filled and shorts open. A grade is the worse of two scores: distance to
+          liquidation in daily one-sigma BTC moves, and daily account volatility (effective leverage × daily BTC sigma).
+        </figcaption>
+      </figure>
+      <div>
+        <p class="note" id="squeeze-text"></p>
+        <table class="data positions" id="risk-table"><tbody></tbody></table>
+        <p class="cap-small">Positions closest to liquidation, in sigma units.</p>
+      </div>
+    </section>
+
+    <section class="pair" aria-label="Signal integrity and Bayesian updating">
+      <div>
+        <h3 class="block-title">Fake-signal detector</h3>
+        <p class="big-read" id="integrity-label">—</p>
+        <table class="data" id="integrity-table"><tbody></tbody></table>
+      </div>
+      <figure class="fig">
+        <h3 class="block-title">Bayesian updating</h3>
+        <div class="chart" id="chart-bayes" style="height:130px"></div>
+        <table class="data mono" id="bayes-table"><tbody></tbody></table>
+        <figcaption>
+          Fig. 10. Posterior density of the long share, Beta(α, β), after exponentially forgetting older sweeps
+          (six-hour half-life). Accent rule: this sweep's raw P(long).
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="pair" aria-label="Contrarian mode">
+      <div>
+        <h3 class="block-title">Contrarian mode</h3>
+        <div class="toggle" role="group" aria-label="Reading">
+          <button type="button" id="view-crowd" aria-pressed="true">Crowd</button>
+          <button type="button" id="view-fade" aria-pressed="false">Faded</button>
+        </div>
+        <p class="big-read" id="contra-verdict">—</p>
+        <p class="note" id="contra-p"></p>
+      </div>
+      <div>
+        <p class="note" id="contra-text"></p>
+        <p class="note">
+          Fading means taking the opposite side of the leaders. It is only argued for when extreme readings
+          (P(long) at or below 0.15, or at or above 0.85) have, over at least 30 scored cases, been followed by the opposite move.
+        </p>
+      </div>
+    </section>
+
+    <section class="block" aria-label="Backtesting">
+      <h3 class="block-title">Backtesting</h3>
+      <table class="data mono" id="acc-table"><tbody><tr><td>Waiting for scored snapshots.</td></tr></tbody></table>
+      <p class="cap-small">
+        Table 2. Live accuracy tracker. Each stored verdict is scored against the BTC price 1, 4, and 24 hours later.
+        Hit rate counts LONG and SHORT verdicts only. Brier score: mean squared error of P(long) as a probability that price rises; 0.25 is a coin.
+      </p>
+      <div class="pair inner">
+        <figure class="fig fig-wide">
+          <div class="chart" id="chart-bt" style="height:160px"></div>
+          <div class="chart" id="chart-bt-eq" style="height:90px"></div>
+          <figcaption id="bt-caption">
+            Fig. 11. Reconstructed seven-day backtest. Top: hourly P(long) rebuilt from the fills of the heaviest wallets (accent)
+            and BTC (grey). Bottom: following the verdict (ink) against holding BTC (grey), no costs.
+          </figcaption>
+        </figure>
+        <div class="side">
+          <table class="data mono" id="bt-table"><tbody></tbody></table>
+          <ul class="limits" id="bt-limits"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="pair" aria-label="Lead-lag study and front-running meter">
+      <figure class="fig">
+        <h3 class="block-title">Lead-lag study</h3>
+        <div class="chart" id="chart-ccf-live" style="height:120px"></div>
+        <div class="chart" id="chart-ccf-bt" style="height:120px"></div>
+        <figcaption>
+          Fig. 12. Cross-correlation of changes in P(long) with later BTC returns. Bars right of zero: the leaders moved first.
+          Bars left of zero: price moved first. Dashed lines: ±1.96/√n noise band. Top: live snapshots. Bottom: reconstructed series.
+        </figcaption>
+      </figure>
+      <div>
+        <h3 class="block-title">Front-running meter</h3>
+        <div class="chart" id="chart-fr" style="height:64px"></div>
+        <p class="big-read" id="fr-label">—</p>
+        <p class="note" id="fr-text"></p>
+        <p class="note" id="ll-text"></p>
+      </div>
+    </section>
+
+    <section class="reserved" aria-label="X sentiment, planned for version 2.0">
+      <h3 class="block-title">X sentiment <span class="tag">planned for v2.0</span></h3>
+      <p id="x-status">
+        Reserved. This panel will read the tone of public posts about Bitcoin on X and set it beside the leaders' positioning.
+        No sentiment data is shown until that feed is connected.
+      </p>
+      <p class="cap-small" id="x-schema">Planned fields: score in [−1, 1], posts scored, bullish and bearish shares, look-back window, method.</p>
+    </section>
+
     <footer class="colophon">
       <p>
         Method. Each wallet with a BTC position votes long or short. The vote is weighted by
@@ -159,6 +358,8 @@
     </p>
   </noscript>
   <script src="js/inclination.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/intel.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

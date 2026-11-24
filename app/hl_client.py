@@ -141,6 +141,47 @@ class HyperliquidClient:
     async def all_mids(self) -> Any:
         return await self.info({"type": "allMids"}, config.WEIGHT_ALL_MIDS)
 
+    async def _info_items(self, body: dict[str, Any], base: int, per: int) -> list[Any]:
+        """Endpoints that cost a base weight plus one unit per `per` items returned."""
+        data = await self.info(body, base)
+        items = data if isinstance(data, list) else []
+        extra = len(items) // per
+        if extra:
+            await self.bucket.acquire(min(extra, config.WEIGHT_CAPACITY))
+        return items
+
+    async def candles(self, coin: str, interval: str, start_ms: int, end_ms: int) -> list[dict[str, Any]]:
+        return await self._info_items(
+            {"type": "candleSnapshot",
+             "req": {"coin": coin, "interval": interval, "startTime": int(start_ms), "endTime": int(end_ms)}},
+            config.WEIGHT_CANDLES, 60,
+        )
+
+    async def funding_history(self, coin: str, start_ms: int, end_ms: int) -> list[dict[str, Any]]:
+        """All hourly funding rows in [start, end], following 500-row pages."""
+        out: list[dict[str, Any]] = []
+        page_start = int(start_ms)
+        for _ in range(10):
+            page = await self._info_items(
+                {"type": "fundingHistory", "coin": coin, "startTime": page_start, "endTime": int(end_ms)},
+                config.WEIGHT_FUNDING, 20,
+            )
+            if not page:
+                break
+            out.extend(page)
+            last = int(page[-1]["time"])
+            if len(page) < 500 or last >= end_ms:
+                break
+            page_start = last + 1
+        return out
+
+    async def user_fills(self, address: str) -> list[dict[str, Any]]:
+        """Most recent fills (up to 2,000) for one wallet."""
+        return await self._info_items(
+            {"type": "userFills", "user": address, "aggregateByTime": True},
+            config.WEIGHT_FILLS, 20,
+        )
+
 
 def window_from_row(row: dict[str, Any], name: str) -> dict[str, str]:
     raw = row.get("windowPerformances") or []
@@ -180,6 +221,20 @@ def btc_mark_from_ctxs(payload: Any) -> Optional[float]:
     return None
 
 
+def btc_ctx_from_ctxs(payload: Any) -> Optional[dict[str, Any]]:
+    """The BTC asset context (funding, openInterest, markPx, premium, ...)."""
+    if not (isinstance(payload, list) and len(payload) >= 2):
+        return None
+    universe = (payload[0] or {}).get("universe") or []
+    for i, asset in enumerate(universe):
+        if asset.get("name") == "BTC":
+            try:
+                return dict(payload[1][i])
+            except (IndexError, TypeError, ValueError):
+                return None
+    return None
+
+
 def extract_btc_position(state: dict[str, Any]) -> dict[str, Any]:
     """Pull the BTC perp position and account equity from clearinghouseState."""
     equity = None
@@ -196,7 +251,30 @@ def extract_btc_position(state: dict[str, Any]) -> dict[str, Any]:
         "leverage": None,
         "unrealized_pnl": None,
         "liquidation_px": None,
+        "total_ntl": None,
+        "other_signed_ntl": 0.0,
+        "n_positions": 0,
     }
+    try:
+        found["total_ntl"] = abs(float((state.get("marginSummary") or {}).get("totalNtlPos")))
+    except (TypeError, ValueError):
+        found["total_ntl"] = None
+    other = 0.0
+    n_pos = 0
+    for item in state.get("assetPositions") or []:
+        pos = (item or {}).get("position") or {}
+        try:
+            szi_o = float(pos.get("szi") or 0)
+            val_o = abs(float(pos.get("positionValue") or 0))
+        except (TypeError, ValueError):
+            continue
+        if szi_o == 0:
+            continue
+        n_pos += 1
+        if pos.get("coin") != "BTC":
+            other += val_o if szi_o > 0 else -val_o
+    found["other_signed_ntl"] = other
+    found["n_positions"] = n_pos
     for item in state.get("assetPositions") or []:
         pos = (item or {}).get("position") or {}
         if pos.get("coin") != "BTC":

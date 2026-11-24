@@ -60,6 +60,10 @@ WEIGHT_CLEARINGHOUSE = 2
 WEIGHT_ALL_MIDS = 2
 WEIGHT_PORTFOLIO = 20
 WEIGHT_META_AND_CTXS = 20
+# Base weights; the client adds one unit per 60 candles or per 20 rows/fills.
+WEIGHT_CANDLES = 20
+WEIGHT_FUNDING = 20
+WEIGHT_FILLS = 20
 MAX_CONCURRENCY = 6
 HTTP_TIMEOUT = 60.0
 RETRY_STATUS = (429, 500, 502, 503, 504)
@@ -68,7 +72,23 @@ MAX_RETRIES = 6
 # Refresh policy
 PORTFOLIO_TTL_SEC = 60 * 60
 LEADERBOARD_TTL_SEC = 60 * 60
-HISTORY_MAX_POINTS = 200
+# 30 days of half-hourly snapshots; history.json is written one row per line.
+HISTORY_MAX_POINTS = 1440
+# Only the last few points are embedded in signal.json; the site reads history.json.
+SIGNAL_HISTORY_POINTS = 48
+
+# Market-intelligence layer
+X_SENTIMENT_JSON = DATA_DIR / "x_sentiment.json"
+CANDLE_DAYS_1H = 35
+CANDLE_DAYS_1D = 400
+CANDLE_DAYS_15M = 16
+FUNDING_DAYS = 30
+CHART_CANDLES_1H = 168
+CHART_CANDLES_1D = 180
+# Reconstructed backtest: most recent fills of the heaviest wallets, refreshed daily.
+BACKTEST_WALLETS = 30
+BACKTEST_DAYS = 7
+BACKTEST_TTL_SEC = 24 * 60 * 60
 
 # HTTP
 REQUEST_TIMEOUT = HTTP_TIMEOUT

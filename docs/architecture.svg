@@ -1,67 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="620" viewBox="0 0 1280 620" role="img" aria-label="Architecture of the Hyperliquid Bitcoin consensus plate.">
-  <rect width="1280" height="620" fill="#EFECE6"/>
-  <path d="M24 24h18M24 24v18" stroke="#141414" stroke-width="1" fill="none"/>
-  <path d="M1256 24h-18M1256 24v18" stroke="#141414" stroke-width="1" fill="none"/>
-  <path d="M24 596h18M24 596v-18" stroke="#141414" stroke-width="1" fill="none"/>
-  <path d="M1256 596h-18M1256 596v-18" stroke="#141414" stroke-width="1" fill="none"/>
-  <text x="48" y="56" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" letter-spacing="2.4">FIG. A  ·  DATA FLOW</text>
-  <line x1="48" y1="68" x2="1232" y2="68" stroke="#141414" stroke-width="1"/>
-  <defs>
-    <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto">
-      <path d="M0 0 L8 4 L0 8" fill="none" stroke="#141414" stroke-width="1"/>
-    </marker>
-  </defs>
-
-  <rect x="48" y="120" width="260" height="88" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
-  <text x="64" y="154" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="16" font-weight="500">Leaderboard file</text>
-  <text x="64" y="178" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">stats-data …/leaderboard</text>
-  <text x="64" y="196" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">GET, ETag cache, hourly</text>
-
-  <rect x="48" y="260" width="260" height="88" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
-  <text x="64" y="294" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="16" font-weight="500">Filter and rank</text>
-  <text x="64" y="318" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">equity, month PnL, turnover</text>
-  <text x="64" y="336" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">portfolio.perpMonth, top 500</text>
-
-  <rect x="48" y="400" width="260" height="88" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
-  <text x="64" y="434" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="16" font-weight="500">Positions</text>
-  <text x="64" y="458" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">clearinghouseState, 500 wallets</text>
-  <text x="64" y="476" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">weight 2, token bucket</text>
-
-  <rect x="420" y="260" width="260" height="88" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
-  <text x="436" y="294" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="16" font-weight="500">Signal</text>
-  <text x="436" y="318" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">weighted P(long), bootstrap</text>
-  <text x="436" y="336" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">LONG / SHORT / NEUTRAL</text>
-
-  <rect x="420" y="400" width="260" height="88" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
-  <text x="436" y="434" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="16" font-weight="500">Mark price</text>
-  <text x="436" y="458" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">metaAndAssetCtxs</text>
-  <text x="436" y="476" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">BTC mark stored with snapshot</text>
-
-  <rect x="792" y="120" width="260" height="100" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
-  <text x="808" y="154" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="16" font-weight="500">Actions cron</text>
-  <text x="808" y="178" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">every 30 minutes</text>
-  <text x="808" y="196" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">portfolio at most hourly</text>
-
-  <rect x="792" y="280" width="260" height="100" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
-  <text x="808" y="314" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="16" font-weight="500">Snapshot files</text>
-  <text x="808" y="338" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">data/signal.json</text>
-  <text x="808" y="356" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">history.json · SQLite locally</text>
-
-  <rect x="792" y="440" width="260" height="100" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
-  <text x="808" y="474" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="16" font-weight="500">GitHub Pages</text>
-  <text x="808" y="498" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">static plate, site/</text>
-  <text x="808" y="516" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">reads signal.json · Fig. 1</text>
-
-  <g stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)">
-    <path d="M178 208v52"/>
-    <path d="M178 348v52"/>
-    <path d="M308 304h112"/>
-    <path d="M308 444h112"/>
-    <path d="M550 400v-52"/>
-    <path d="M680 304h112"/>
-    <path d="M922 220v60"/>
-    <path d="M922 380v60"/>
-  </g>
-  <text x="48" y="568" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12">NO PRIVATE API  ·  NO PAID BACKEND  ·  WEIGHT BUDGET 1,200 / MINUTE</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" role="img" aria-label="Architecture: public Hyperliquid endpoints feed the signal and the market-intelligence layer, which write JSON files that the GitHub Pages plate reads.">
+<rect width="1280" height="760" fill="#EFECE6"/>
+<path d="M24 24h18M24 24v18" stroke="#141414" stroke-width="1" fill="none"/>
+<path d="M1256 24h-18M1256 24v18" stroke="#141414" stroke-width="1" fill="none"/>
+<path d="M24 736h18M24 736v-18" stroke="#141414" stroke-width="1" fill="none"/>
+<path d="M1256 736h-18M1256 736v-18" stroke="#141414" stroke-width="1" fill="none"/>
+<text x="48" y="56" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" letter-spacing="2.4">FIG. A  ·  DATA FLOW, REV 1.0</text>
+<line x1="48" y1="68" x2="1232" y2="68" stroke="#141414" stroke-width="1"/>
+<defs><marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#141414" stroke-width="1"/></marker></defs>
+<text x="48" y="100" fill="#3F3F3A" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="12" letter-spacing="1.6">PUBLIC SOURCES</text>
+<text x="360" y="100" fill="#3F3F3A" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="12" letter-spacing="1.6">SWEEP (PYTHON)</text>
+<text x="760" y="100" fill="#3F3F3A" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="12" letter-spacing="1.6">FILES IN THE REPOSITORY</text>
+<text x="1040" y="100" fill="#3F3F3A" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="12" letter-spacing="1.6">PLATE</text>
+<rect x="48" y="116" width="260" height="80" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
+<text x="62" y="142" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">Leaderboard file</text>
+<text x="62" y="164" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">stats-data …/leaderboard</text>
+<text x="62" y="181" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">ETag cache, hourly</text>
+<rect x="48" y="212" width="260" height="80" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
+<text x="62" y="238" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">portfolio</text>
+<text x="62" y="260" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">perpMonth PnL, 700 wallets</text>
+<text x="62" y="277" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">weight 20, hourly</text>
+<rect x="48" y="308" width="260" height="80" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
+<text x="62" y="334" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">clearinghouseState</text>
+<text x="62" y="356" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">500 wallets, every sweep</text>
+<text x="62" y="373" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">weight 2, token bucket</text>
+<rect x="48" y="404" width="260" height="98" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
+<text x="62" y="430" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">Market context</text>
+<text x="62" y="452" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">metaAndAssetCtxs</text>
+<text x="62" y="469" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">candleSnapshot 15m / 1h / 1d</text>
+<text x="62" y="486" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">fundingHistory, 30 days</text>
+<rect x="48" y="518" width="260" height="80" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
+<text x="62" y="544" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">userFills</text>
+<text x="62" y="566" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">30 heaviest wallets</text>
+<text x="62" y="583" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">latest 2,000 fills, daily</text>
+<rect x="360" y="150" width="330" height="92" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
+<text x="374" y="176" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">Cohort and signal</text>
+<text x="374" y="198" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">filters, top 500 by perpMonth</text>
+<text x="374" y="215" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">weighted P(long), bootstrap CI</text>
+<text x="374" y="232" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">verdict 0.40 / 0.60</text>
+<rect x="360" y="276" width="330" height="322" fill="#EFECE6" stroke="#8C1D12" stroke-width="1.5"/>
+<text x="374" y="302" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">Market-intelligence layer</text>
+<text x="374" y="324" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">risk grade, squeeze warning</text>
+<text x="374" y="341" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">liquidation map</text>
+<text x="374" y="358" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">flip detector, change watch</text>
+<text x="374" y="375" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">position-change feed</text>
+<text x="374" y="392" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">price action, EMA 20/50/200</text>
+<text x="374" y="409" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">regime, fear and greed</text>
+<text x="374" y="426" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">funding and open interest</text>
+<text x="374" y="443" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">fake-signal checks</text>
+<text x="374" y="460" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">Bayesian posterior</text>
+<text x="374" y="477" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">contrarian mode</text>
+<text x="374" y="494" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">accuracy tracker, backtest</text>
+<text x="374" y="511" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">lead-lag, front-running meter</text>
+<text x="374" y="528" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">X sentiment slot (v2.0)</text>
+<rect x="760" y="150" width="240" height="80" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
+<text x="774" y="176" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">signal.json</text>
+<text x="774" y="198" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">verdict + intel block</text>
+<text x="774" y="215" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">about 75 KB</text>
+<rect x="760" y="262" width="240" height="80" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
+<text x="774" y="288" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">history.json</text>
+<text x="774" y="310" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">one row per sweep</text>
+<text x="774" y="327" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">capped at 30 days</text>
+<rect x="760" y="374" width="240" height="80" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
+<text x="774" y="400" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">cohort.json</text>
+<text x="774" y="422" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">cohort + last_positions</text>
+<text x="774" y="439" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">previous sweep state</text>
+<rect x="760" y="486" width="240" height="80" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
+<text x="774" y="512" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">x_sentiment.json</text>
+<text x="774" y="534" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">optional, absent today</text>
+<text x="774" y="551" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">never fetched in CI</text>
+<rect x="1040" y="150" width="192" height="128" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
+<text x="1054" y="176" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">GitHub Pages</text>
+<text x="1054" y="198" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">static HTML, SVG</text>
+<text x="1054" y="215" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">IBM Plex, no CDN</text>
+<text x="1054" y="232" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">reads signal.json</text>
+<text x="1054" y="249" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">and history.json</text>
+<rect x="1040" y="310" width="192" height="96" fill="#EFECE6" stroke="#141414" stroke-width="1"/>
+<text x="1054" y="336" fill="#141414" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="15" font-weight="500">Actions</text>
+<text x="1054" y="358" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">cron 7,37 * * * *</text>
+<text x="1054" y="375" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">commit snapshot</text>
+<text x="1054" y="392" fill="#3F3F3A" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="11.5">deploy site/</text>
+<path d="M308 156 L360 180" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M308 252 L360 200" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M308 348 L360 225" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M308 348 L360 340" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M308 453 L360 430" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M308 558 L360 540" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M525 242 L525 276" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M690 196 L760 190" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M690 330 L760 302" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M690 430 L760 414" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M760 414 L690 460" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M1000 190 L1040 200" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M1000 302 L1040 240" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M760 526 L690 560" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<path d="M1136 310 L1136 278" stroke="#141414" stroke-width="1" fill="none" marker-end="url(#arr)"/>
+<line x1="48" y1="680" x2="1232" y2="680" stroke="#B7B3A9" stroke-width="1"/>
+<text x="48" y="704" fill="#3F3F3A" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="13">Every source is a public Hyperliquid endpoint. State between sweeps lives in committed JSON, so a fresh checkout reproduces the plate.</text>
+<text x="48" y="724" fill="#3F3F3A" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="13">Budget: 1,200 weight per minute per IP. A routine sweep spends about 1,150; the daily backtest about 3,600, spread over three minutes.</text>
 </svg>

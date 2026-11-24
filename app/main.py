@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from . import config
-from .store import load_history, load_latest_json
+from .store import load_history_json, load_latest_json
 
 app = FastAPI(title="Hyperliquid BTC consensus", docs_url=None, redoc_url=None)
 
@@ -25,7 +25,7 @@ def api_signal():
 
 @app.get("/api/history")
 def api_history():
-    return load_history()
+    return load_history_json()
 
 
 @app.get("/")

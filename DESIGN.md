@@ -134,3 +134,27 @@ The demo GIF is a recording of the real page (verdict, sphere, sparkline, table)
 ### What this page will not contain
 
 A feature-card row, a call-to-action pair, a testimonial band, a logo wall, a chatbot bubble, a pulsing live dot, fake statistics, or a headline that could sell another product.
+
+## Rev 1.0: the market-intelligence layer
+
+The layer extends the same sheet rather than adding a dashboard beneath it. The rules above still hold; these are the additions.
+
+### Page order, after Fig. 1
+
+1. **Table 1, instrument readout.** One hairline table, one row per instrument (market change watch, flip detector, posterior, risk grade, regime, fear and greed, integrity, funding, contrarian, front-running). Label in small caps, reading in Plex Mono, reason in muted Sans. On narrow screens each row stacks into label, reading, reason. It is an annunciator panel set in type, not a grid of tiles.
+2. **Fig. 2, history.** P(long) in accent, the Bayesian posterior as a dashed ink line, the BTC mark in grey on a right-hand scale, thresholds as dashed hairlines.
+3. The existing counts, size bands, and Fig. 3.
+4. **Market intelligence**, introduced by a heavier 2px rule and a one-sentence lede. Each instrument is a figure with a numbered caption, paired with a compact table where useful, separated by hairlines: price action and EMA study (Fig. 4, with a daily small multiple), regime and fear and greed (Fig. 5), liquidation map (Fig. 6), funding and open interest (Fig. 7), flip detector and position-change feed (Fig. 8), cohort risk grade (Fig. 9), fake-signal detector and Bayesian posterior (Fig. 10), contrarian mode, backtesting (Table 2, Fig. 11), lead-lag and front-running (Fig. 12).
+5. **X sentiment, planned for v2.0.** A dashed-hairline reserved panel with the planned fields and no numbers.
+
+### Chart grammar
+
+- Hand-built SVG, drawn at the container's real pixel width so 9–11px mono labels stay legible on a 390px screen. No chart library.
+- Long is filled ink, short is an open ink outline, the same convention as the notional stack rule. No green and red.
+- The accent marks only the current reading: the needle, the mark rule, the live P(long) line, the peak lag.
+- Candles: hollow body when close is above open, filled when below. EMA 20 thin, EMA 50 dashed, EMA 200 heavy grey.
+- Every empty state is a sentence on a dashed hairline: "Too few paired points yet.", "Baseline stored; changes appear from the next sweep."
+
+### Honesty in the copy
+
+Panels that need history (accuracy, contrarian, lead-lag, open-interest change) say how much evidence they have and refuse a conclusion below a stated sample. The front-running meter reads NO CLEAR LEAD unless a non-zero lag clears the noise band. The reconstructed backtest lists its biases beside the numbers.

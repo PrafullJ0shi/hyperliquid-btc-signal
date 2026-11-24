@@ -2,6 +2,13 @@
   "use strict";
 
   var DATA_URL = "data/signal.json";
+  var HISTORY_URL = "data/history.json";
+
+  function loadHistory() {
+    return fetch(HISTORY_URL, { cache: "no-store" })
+      .then(function (res) { return res.ok ? res.json() : []; })
+      .catch(function () { return []; });
+  }
   var instrument = null;
 
   function $(id) { return document.getElementById(id); }
@@ -62,59 +69,6 @@
     el.hidden = !text;
     el.textContent = text || "";
     el.classList.toggle("is-error", !!isError);
-  }
-
-  function renderSparkline(history) {
-    var svg = $("history-chart");
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
-    var ns = "http://www.w3.org/2000/svg";
-    var w = 1000, h = 72, pad = 8;
-    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
-    svg.setAttribute("preserveAspectRatio", "none");
-    function line(x1, y1, x2, y2, stroke, width, dash) {
-      var el = document.createElementNS(ns, "line");
-      el.setAttribute("x1", x1); el.setAttribute("y1", y1);
-      el.setAttribute("x2", x2); el.setAttribute("y2", y2);
-      el.setAttribute("stroke", stroke);
-      el.setAttribute("stroke-width", width);
-      el.setAttribute("vector-effect", "non-scaling-stroke");
-      if (dash) el.setAttribute("stroke-dasharray", dash);
-      svg.appendChild(el);
-    }
-    var innerH = h - pad * 2;
-    function yOf(p) { return pad + innerH * (1 - p); }
-    line(0, yOf(0.5), w, yOf(0.5), "#141414", 1);
-    line(0, yOf(0.6), w, yOf(0.6), "#B7B3A9", 1, "2 3");
-    line(0, yOf(0.4), w, yOf(0.4), "#B7B3A9", 1, "2 3");
-    var pts = (history || []).filter(function (d) { return d.p_long != null; });
-    var note = document.getElementById("history-note");
-    if (note) {
-      if (pts.length < 2) {
-        note.hidden = false;
-        note.textContent = pts.length === 1
-          ? "One snapshot stored; the strip will fill as later sweeps arrive."
-          : "No stored history yet.";
-      } else {
-        note.hidden = true;
-        note.textContent = "";
-      }
-    }
-    if (pts.length < 2) {
-      return;
-    }
-    var d = "";
-    pts.forEach(function (pt, i) {
-      var x = (i / (pts.length - 1)) * w;
-      var y = yOf(Number(pt.p_long));
-      d += (i === 0 ? "M" : "L") + x.toFixed(2) + " " + y.toFixed(2);
-    });
-    var path = document.createElementNS(ns, "path");
-    path.setAttribute("d", d);
-    path.setAttribute("fill", "none");
-    path.setAttribute("stroke", "#8C1D12");
-    path.setAttribute("stroke-width", "1.5");
-    path.setAttribute("vector-effect", "non-scaling-stroke");
-    svg.appendChild(path);
   }
 
   function fillTable(id, headers, rows) {
@@ -217,7 +171,9 @@
       })
     );
 
-    renderSparkline(data.history || []);
+    loadHistory().then(function (hist) {
+      if (typeof window.renderIntel === "function") window.renderIntel(data, hist);
+    });
     document.title = verdict + " — BTC consensus, Hyperliquid one-month leaders";
   }
 
@@ -246,7 +202,6 @@
       .then(apply)
       .catch(function (err) {
         showStatus("No snapshot yet. Run the sweep, then reload this page. (" + err.message + ")", true);
-        renderSparkline([]);
       });
   }
 
