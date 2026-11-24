@@ -366,13 +366,26 @@ table.positions td:first-child { font-family: "IBM Plex Mono", ui-monospace, mon
 @media (max-width: 720px) {
   .sheet { padding: 22px 18px 48px; }
   h1 { font-size: 24px; max-width: none; }
+  .lede { margin-bottom: 18px; }
   .verdict { font-size: 56px; }
   .primary,
   .counts,
   .dochead {
     grid-template-columns: 1fr;
   }
+  /* Verdict first: a full-width sphere would push SHORT/LONG below the fold. */
+  .primary .reading { order: -1; }
+  .fig-sphere {
+    width: min(100%, 240px);
+    margin-inline: auto;
+  }
+  .fig-sphere figcaption { max-width: none; }
   .dochead .issued { text-align: left; }
+  .counts > div,
+  figure.fig:has(table) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   .sheet-foot-marks::before { left: -8px; }
   .sheet-foot-marks::after { right: -8px; }
 }

@@ -30,7 +30,7 @@ This is **not financial advice** and **not a forecast**. It is a descriptive rea
 
 ## Algorithm
 
-Each wallet \(i\) with a non-zero Bitcoin perpetual is a vote. Long is \(s_i = +1\), short is \(s_i = -1\). Wallets that are flat in BTC do not vote.
+Each wallet $i$ with a non-zero Bitcoin perpetual is a vote. Long is $s_i = +1$, short is $s_i = -1$. Wallets that are flat in BTC do not vote.
 
 The skill, size, and conviction weight is
 
@@ -40,7 +40,7 @@ w_i = \log\bigl(1 + \mathrm{PnL}_i^{\mathrm{perpMonth}}\bigr)
 \cdot \min\bigl(|N_i^{\mathrm{BTC}}| / E_i,\, 3\bigr)
 $$
 
-where \(E_i\) is account equity (USD) and \(N_i^{\mathrm{BTC}}\) is the Bitcoin position notional (USD). Equity below $100,000 shrinks the vote toward zero. Conviction is BTC notional over equity, capped at 3.
+where $E_i$ is account equity (USD) and $N_i^{\mathrm{BTC}}$ is the Bitcoin position notional (USD). Equity below USD 100,000 shrinks the vote toward zero. Conviction is BTC notional over equity, capped at 3.
 
 The headline probability is the share of that weight on the long side:
 
@@ -49,9 +49,9 @@ P(\mathrm{long})
 = \frac{\sum_{s_i=+1} w_i}{\sum_{s_i=+1} w_i + \sum_{s_i=-1} w_i}
 $$
 
-If the denominator is zero (no BTC votes), the verdict is NEUTRAL and \(P(\mathrm{long})\) is undefined.
+If the denominator is zero (no BTC votes), the verdict is NEUTRAL and $P(\mathrm{long})$ is undefined.
 
-The interval shown on the plate is a **95% bootstrap percentile interval**: traders are resampled with replacement 5,000 times (seed 42), \(P(\mathrm{long})\) is recomputed, and the 2.5th and 97.5th percentiles are reported. As a robustness check the snapshot also stores an equal-tailed interval from the unweighted Beta posterior
+The interval shown on the plate is a **95% bootstrap percentile interval**: traders are resampled with replacement 5,000 times (seed 42), $P(\mathrm{long})$ is recomputed, and the 2.5th and 97.5th percentiles are reported. As a robustness check the snapshot also stores an equal-tailed interval from the unweighted Beta posterior
 
 $$
 \theta \sim \mathrm{Beta}\bigl(1 + n_{\mathrm{long}},\, 1 + n_{\mathrm{short}}\bigr).
@@ -60,13 +60,7 @@ $$
 The decision rule, applied to the point estimate, is
 
 $$
-\text{verdict}
-=
-\begin{cases}
-\mathrm{LONG} & \text{if } P(\mathrm{long}) \ge 0.60 \\
-\mathrm{SHORT} & \text{if } P(\mathrm{long}) \le 0.40 \\
-\mathrm{NEUTRAL} & \text{otherwise.}
-\end{cases}
+\mathrm{verdict} = \begin{cases} \mathrm{LONG} & \text{if } P(\mathrm{long}) \ge 0.60 \\[4pt] \mathrm{SHORT} & \text{if } P(\mathrm{long}) \le 0.40 \\[4pt] \mathrm{NEUTRAL} & \text{otherwise.} \end{cases}
 $$
 
 When the bootstrap interval includes 0.5, the plate states that the point verdict is weakly held.
@@ -75,14 +69,14 @@ When the bootstrap interval includes 0.5, the plate states that the point verdic
 
 ```mermaid
 flowchart LR
-  A[Leaderboard file<br/>stats-data, ETag cache] --> B[Filter and rank<br/>equity, PnL, turnover]
-  B --> C[portfolio.perpMonth<br/>top 500]
-  C --> D[clearinghouseState<br/>BTC positions]
-  E[metaAndAssetCtxs<br/>BTC mark] --> F[Signal]
+  A["Leaderboard file"] --> B["Filter and rank"]
+  B --> C["portfolio top 500"]
+  C --> D["clearinghouseState"]
+  E["BTC mark"] --> F["Signal"]
   D --> F
-  F --> G[signal.json + history]
-  G --> H[GitHub Pages plate]
-  I[Actions every 30 min] --> C
+  F --> G["signal.json"]
+  G --> H["GitHub Pages plate"]
+  I["Actions every 30 min"] --> C
   I --> D
 ```
 
@@ -90,9 +84,9 @@ flowchart LR
   <img src="docs/architecture.svg" alt="Data flow from the public leaderboard and info endpoints, through the weighted signal, into signal.json and the GitHub Pages plate." width="100%">
 </p>
 
-A GitHub Actions workflow is written to run the Python sweep on a 30-minute cron (and on manual dispatch). The heavier `portfolio` ranking is reused for up to an hour. The job writes `data/signal.json` and can publish the `site/` directory. No paid API and no private node are required.
+A GitHub Actions workflow runs the Python sweep on a 30-minute cron and on manual dispatch. The heavier `portfolio` ranking is reused for up to an hour. The job writes `data/signal.json`, commits the snapshot, and publishes the `site/` directory to GitHub Pages. No paid API and no private node are required.
 
-The first public copy of this repository was pushed without `.github/workflows/sweep.yml` because the token used to publish it lacked the `workflow` scope. The complete workflow file is in [`docs/github-workflow-sweep.yml`](docs/github-workflow-sweep.yml). To turn on the half-hour refresh, copy that file to `.github/workflows/sweep.yml` in the GitHub UI or push it with a token that has the `workflow` scope. Until then, the [live plate](https://prafullj0shi.github.io/hyperliquid-btc-signal/) shows the snapshot on the `gh-pages` branch.
+The workflow file is [`.github/workflows/sweep.yml`](.github/workflows/sweep.yml). A copy is also kept at [`docs/github-workflow-sweep.yml`](docs/github-workflow-sweep.yml).
 
 ## How to run it locally
 
@@ -127,7 +121,7 @@ Unit tests (no network):
 | --- | --- | --- |
 | Minimum equity | $10,000 | Drops dust accounts. |
 | Month PnL | strictly greater than 0 | The cohort is last month’s winners, not lifetime. |
-| Turnover cap | month volume / equity \(\le 100\) | In a 24 Nov 2026 snapshot, wallets at 117–217× turnover looked market-maker-like; a named discretionary trader sat near 94×. 100 is a heuristic, not a perfect filter. |
+| Turnover cap | month volume / equity $\le 100$ | In a 24 Nov 2026 snapshot, wallets at 117–217× turnover looked market-maker-like; a named discretionary trader sat near 94×. 100 is a heuristic, not a perfect filter. |
 | Ranking field | `portfolio` window `perpMonth` | The raw leaderboard month PnL is not perp-only (spot and other PnL can dominate, sometimes with near-zero volume). |
 | Candidate pool | 700, then 500 | Extra names backfill wallets whose perp month PnL is not positive. |
 | Info API budget | 1,200 weight / minute / IP | `portfolio` weighs 20; `clearinghouseState` and `allMids` weigh 2. The sweep uses a token bucket and backs off on HTTP 429. |
