@@ -1,9 +1,9 @@
 # Bitcoin positioning among Hyperliquid one-month leaders
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-8C1D12?labelColor=141414)](LICENSE)
-[![Python 3.12](https://img.shields.io/badge/python-3.12-EFECE6?labelColor=141414&color=8C1D12)](https://www.python.org/)
-[![Live plate](https://img.shields.io/badge/live-GitHub%20Pages-EFECE6?labelColor=141414&color=8C1D12)](https://prafullj0shi.github.io/hyperliquid-btc-signal/)
 [![Sweep](https://github.com/PrafullJ0shi/hyperliquid-btc-signal/actions/workflows/sweep.yml/badge.svg)](https://github.com/PrafullJ0shi/hyperliquid-btc-signal/actions/workflows/sweep.yml)
+[![Live plate](https://img.shields.io/badge/live-GitHub%20Pages-EFECE6?labelColor=141414&color=8C1D12)](https://prafullj0shi.github.io/hyperliquid-btc-signal/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-EFECE6?labelColor=141414&color=8C1D12)](https://www.python.org/)
 [![Not financial advice](https://img.shields.io/badge/not-financial%20advice-EFECE6?labelColor=141414&color=3F3F3A)](https://prafullj0shi.github.io/hyperliquid-btc-signal/)
 
 <p align="center">
@@ -12,17 +12,79 @@
 
 A public, open-source instrument that answers one question: among the top 500 Hyperliquid traders ranked on **last-month perp PnL**, are their Bitcoin perpetual positions, on balance, long or short — and how concentrated is that weight?
 
-The live plate is at [prafullj0shi.github.io/hyperliquid-btc-signal](https://prafullj0shi.github.io/hyperliquid-btc-signal/). The machine-readable snapshot is [`site/data/signal.json`](site/data/signal.json) (same file as [`data/signal.json`](data/signal.json)).
-
-Around that reading sits a **market-intelligence layer**: cohort risk grades, a liquidation map, a flip detector with a market-change watch, a position-change feed, the history of P(long) with a Bayesian posterior, price action with an EMA study, a regime detector, a fear and greed meter, funding and open interest, a fake-signal detector, contrarian mode, backtesting, a lead-lag study, and a front-running meter. A **Flows** tab adds a past-4-hour flow box (opened, added, closed, trimmed) with 1h to 1w timeframes, the top cohort set against the worst-performing cohort, a whale tape with orders worked over time, and big liquidations with a wave detector; see [Flows, whales and liquidations](#flows-whales-and-liquidations). All of it is computed in the same sweep from public Hyperliquid data and documented under [Methodology](#methodology). A reconstructed [30-day backtest](#research-30-day-backtest) of the signal is published under [`research/`](research/backtest-30d/README.md) and on the site's Backtest tab.
+The live plate is at [prafullj0shi.github.io/hyperliquid-btc-signal](https://prafullj0shi.github.io/hyperliquid-btc-signal/). It has three tabs: **Signal**, **Flows**, and **Backtest**. The machine-readable snapshot is [`site/data/signal.json`](site/data/signal.json) (same file as [`data/signal.json`](data/signal.json)).
 
 This is **not financial advice** and **not a forecast**. It is a descriptive reading of public positions at the issue time. It can be wrong. Do not trade on it.
 
+## Contents
+
+- [What it shows](#what-it-shows)
+- [Quick start](#quick-start)
+- [Methodology](#methodology)
+- [Flows, whales and liquidations](#flows-whales-and-liquidations)
+- [Research: 30-day backtest](#research-30-day-backtest)
+- [Limits](#limits)
+- [Upcoming: v2.0](#upcoming-v20)
+- [Architecture](#architecture)
+- [Filters, rate limits, and cadence](#filters-rate-limits-and-cadence)
+- [License](#license)
+- [Disclaimer](#disclaimer)
+- [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [v2.0 plan](docs/ROADMAP.md)
+
+## What it shows
+
+**Signal.** A weighted P(long), a 95% bootstrap interval, and a verdict (LONG at or above 0.60, SHORT at or below 0.40, otherwise NEUTRAL). Around that reading sits a market-intelligence layer: cohort risk grades, a liquidation map, a flip detector, a position-change feed, the history of P(long), price action and EMAs, a regime detector, a fear and greed meter, funding and open interest, a fake-signal detector, contrarian mode, a reconstructed backtest, a lead-lag study, and a front-running meter. An X sentiment panel is reserved for [v2.0](#upcoming-v20).
+
 <p align="center">
-  <img src="docs/demo.gif" alt="A scroll through the live plate: verdict, instrument readout, history with posterior, positions, and the market-intelligence figures." width="100%">
+  <img src="docs/signal.png" alt="The Signal tab of the live plate: Signal, Flows and Backtest tabs, the inclination sphere, a SHORT verdict, the weighted P(long) and interval, Table 1 (the instrument readout), and the history of P(long) against the Bitcoin mark." width="100%">
 </p>
 
-## What it measures
+**Flows.** Who added to Bitcoin longs and shorts in the last hours, and who was forced out: a past-4-hour flow box (opened, added, closed, trimmed) with 1h to 1w timeframes, the top cohort set against the worst-performing cohort, a whale tape with orders worked over time, and sampled liquidations with a wave detector. Method: [Flows, whales and liquidations](#flows-whales-and-liquidations).
+
+<p align="center">
+  <img src="docs/flows.png" alt="The Flows tab: a 95.7 percent short main reading, a past-4-hour flow box with longs down and shorts up, Table F1 of opened, added, closed and trimmed notional, and a comparison of the top cohort against the worst-performing cohort." width="100%">
+</p>
+
+**Backtest.** A reconstructed 30-day study asks whether following the signal would have made money after fees and funding, and states the result next to the reasons it is not evidence of an edge. Write-up: [`research/backtest-30d/README.md`](research/backtest-30d/README.md) and the [Backtest tab](https://prafullj0shi.github.io/hyperliquid-btc-signal/#backtest).
+
+<p align="center">
+  <img src="docs/backtest.png" alt="The Backtest tab: the 30-day reconstructed result, comparison with always-short and buy-and-hold, and a note that the signal never left SHORT, so the profit is the fall in Bitcoin, not evidence that the signal times turns." width="100%">
+</p>
+
+The method for every live reading is under [Methodology](#methodology). Screenshots are from a 25 November 2026 issue of the plate and will lag the live numbers.
+
+## Quick start
+
+Python 3.11 or newer, then:
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python -m app.sweep          # first run rebuilds the cohort (about 10–15 min)
+.venv/bin/python -m app.sweep          # later runs inside the hour skip portfolio
+```
+
+Serve the plate:
+
+```bash
+.venv/bin/pip install -r requirements.txt   # includes uvicorn
+.venv/bin/python -m app.main                # http://127.0.0.1:8000/
+# or:  python3 -m http.server 8000 --directory site --bind 127.0.0.1
+```
+
+`GET /api/signal` and `GET /api/history` are served by the local FastAPI process. The public site is static and only needs `site/data/signal.json`.
+
+Unit tests (no network):
+
+```bash
+.venv/bin/pytest -q
+```
+
+## Methodology
+
+How the live readings are built, from the cohort and the weighted vote through the market-intelligence layer. Flows are documented separately under [Flows, whales and liquidations](#flows-whales-and-liquidations).
+
+### What it measures
 
 1. Download the public Hyperliquid leaderboard and keep it under an ETag cache.
 2. Keep wallets with month PnL strictly greater than zero, account equity of at least $10,000, and month volume / equity of at most 100 (a turnover cap aimed at extreme market-maker-like flow; see below).
@@ -30,7 +92,7 @@ This is **not financial advice** and **not a forecast**. It is a descriptive rea
 4. Poll `clearinghouseState` for those 500 wallets (weight 2 each, under the official 1,200 weight/minute budget) and read their BTC positions.
 5. Compute a weighted P(long), a 95% bootstrap interval, and a verdict.
 
-## Algorithm
+### Algorithm
 
 Each wallet $i$ with a non-zero Bitcoin perpetual is a vote. Long is $s_i = +1$, short is $s_i = -1$. Wallets that are flat in BTC do not vote.
 
@@ -66,8 +128,6 @@ The decision rule, applied to the point estimate, is:
 - NEUTRAL otherwise.
 
 When the bootstrap interval includes 0.5, the plate states that the point verdict is weakly held.
-
-## Methodology
 
 <p align="center">
   <img src="docs/intel.png" alt="The market-intelligence section of the plate: hourly candles with EMA 20, 50 and 200, daily small multiple, price-action table, regime detector, fear and greed meter, and the liquidation map." width="100%">
@@ -165,7 +225,7 @@ Bands: under 25 extreme fear, 25 to 44 fear, 45 to 55 neutral, 56 to 75 greed, a
 
 ### 9. X sentiment `[intel.x_sentiment]`
 
-Reserved for v2.0 (see [Roadmap](#roadmap-v20)). The sweep never calls X. If a valid `data/x_sentiment.json` exists (`ts_utc`, `n_posts`, and `score` in $[-1, 1]$ required; `window_hours`, `bull_share`, `bear_share`, `method` optional), it is passed through; otherwise the panel shows its planned state and no numbers.
+Reserved for v2.0 (see [Upcoming: v2.0](#upcoming-v20) and [docs/ROADMAP.md](docs/ROADMAP.md)). The sweep never calls X. If a valid `data/x_sentiment.json` exists (`ts_utc`, `n_posts`, and `score` in $[-1, 1]$ required; `window_hours`, `bull_share`, `bear_share`, `method` optional), it is passed through; otherwise the panel shows its planned state and no numbers.
 
 ### 10. Contrarian mode `[intel.contrarian]`
 
@@ -348,12 +408,27 @@ Would following this signal for 30 days have made money? A reconstructed backtes
 - **Flows see snapshots, not every trade.** A position opened and closed between two sweeps (about 30 minutes, sometimes longer when GitHub delays a scheduled run) is invisible, and "trimmed" means part of a position was cut within one step. Windows longer than the stored history are disabled until it exists.
 - **Whales and worked orders are found only among tracked wallets**, and fills are requested only for wallets whose size moved by at least USD 25,000 since the previous sweep (at most 50 per sweep, four hours back). A TWAP-like pattern is a heuristic: a market maker's resting fills or a series of discretionary trades can look the same.
 - **The worst-performing cohort** is ranked on whole-account leaderboard PnL, not perp-only PnL, and its membership changes as the leaderboard updates.
+- A WebSocket cannot subscribe to 500 users from one IP (the official cap is 10 unique users). This project polls REST.
+- GitHub Actions shares a datacenter IP; 429s will slow a run. The job is allowed 40 minutes; a run with a cohort rebuild and the daily backtest takes about 15.
+- The turnover cap will admit some market makers and exclude some active discretionary traders.
+- Leaderboard and `portfolio` windows are not intra-minute. Positions are polled more often than the cohort is rebuilt.
 
-## Roadmap: v2.0
+## Upcoming: v2.0
 
-- **X sentiment.** Read the tone of public posts about Bitcoin on X over a fixed window, score it on $[-1, 1]$, and place it beside the leaders' positioning and the fear and greed meter. The panel and the `data/x_sentiment.json` schema are already in place; it stays empty, with no placeholder numbers, until the feed is connected.
-- Longer live accuracy record, so contrarian mode and the front-running meter can move past "insufficient evidence".
-- The same instrument for ETH, SOL, and HYPE.
+v2.0 is a planned increment, not a date and not a promise of profit. The full plan — goal, method, data, limits, and done-when for each item — is in [`docs/ROADMAP.md`](docs/ROADMAP.md).
+
+| Feature | What it adds | Priority | Status |
+| --- | --- | --- | --- |
+| X sentiment | Score public posts about Bitcoin on X, place the score beside the leaders' positioning and the fear and greed meter, and read it contrarian-style. The reserved panel and `data/x_sentiment.json` hook already exist; the sweep does not call X. | P1 | Planned |
+| Live out-of-sample backtest | Score the issued verdict from stored snapshots as they were taken, with no hindsight cohort, and publish that path next to the reconstructed 30-day study. | P1 | Planned |
+| Multi-coin (ETH, SOL, HYPE) | The same instrument for other perpetuals. The code already has a single coin setting, and each position poll already carries every coin on the account. | P2 | Planned |
+| Market-wide liquidation feed | A market-wide BTC liquidation series, if a public source can support it. Official Hyperliquid APIs have no such feed today, and a scheduled Actions job cannot hold a WebSocket open. | P2 | Planned, if feasible |
+| Regime-conditioned accuracy | Report the live scorer separately in HIGH-VOL, TRENDING, and RANGING, and refuse a conclusion in any bucket that is still too small. | P2 | Planned |
+| Alerts | Notify on a verdict flip or a liquidation wave, starting with a static RSS feed on the public site; Telegram or email optional. | P3 | Planned |
+| Weekly research note | A short dated report of what the plate said and what the live scorer has accrued, in the same voice as the Backtest tab. | P3 | Planned |
+| Per-wallet pages | A page for one tracked wallet, opened from the tape or the position feed, built from the published snapshot. | P3 | Planned |
+
+The X sentiment panel stays empty, with no placeholder numbers, until a valid file is connected.
 
 ## Architecture
 
@@ -393,34 +468,7 @@ A GitHub Actions workflow runs the Python sweep on a 30-minute cron and on manua
 | `site/backtest/` | Backtest tab data: CSV, results, chart series and figures copied from `research/backtest-30d/` by `build_docs.py`. Static: the sweep neither writes nor deletes it | fixed |
 | `data/x_sentiment.json` | Optional. Reserved for the v2.0 X sentiment feed; absent today | not read in CI unless present |
 
-The workflow file is [`.github/workflows/sweep.yml`](.github/workflows/sweep.yml). A copy is also kept at [`docs/github-workflow-sweep.yml`](docs/github-workflow-sweep.yml).
-
-## How to run it locally
-
-Python 3.11 or newer, then:
-
-```bash
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-.venv/bin/python -m app.sweep          # first run rebuilds the cohort (about 10–15 min)
-.venv/bin/python -m app.sweep          # later runs inside the hour skip portfolio
-```
-
-Serve the plate:
-
-```bash
-.venv/bin/pip install -r requirements.txt   # includes uvicorn
-.venv/bin/python -m app.main                # http://127.0.0.1:8000/
-# or:  python3 -m http.server 8000 --directory site --bind 127.0.0.1
-```
-
-`GET /api/signal` and `GET /api/history` are served by the local FastAPI process. The public site is static and only needs `site/data/signal.json`.
-
-Unit tests (no network):
-
-```bash
-.venv/bin/pytest -q
-```
+The live workflow is [`.github/workflows/sweep.yml`](.github/workflows/sweep.yml). A copy is kept in sync at [`docs/github-workflow-sweep.yml`](docs/github-workflow-sweep.yml) so the scheduled job can be read and proposed changes can be reviewed without editing `.github/workflows` (that path needs a workflow-scoped token). If the two ever diverge, the live workflow is the one that runs.
 
 ## Filters, rate limits, and cadence
 
@@ -440,13 +488,11 @@ Unit tests (no network):
 
 The leaderboard is the undocumented public file [https://stats-data.hyperliquid.xyz/Mainnet/leaderboard](https://stats-data.hyperliquid.xyz/Mainnet/leaderboard) (about 38 MB, typically close to hourly). It is cached with `If-None-Match`. All other reads are official `POST https://api.hyperliquid.xyz/info` requests.
 
-## Operational limits
-
-- A WebSocket cannot subscribe to 500 users from one IP (the official cap is 10 unique users). This project polls REST.
-- GitHub Actions shares a datacenter IP; 429s will slow a run. The job is allowed 40 minutes; a run with a cohort rebuild and the daily backtest takes about 15.
-- The turnover cap will admit some market makers and exclude some active discretionary traders.
-- Leaderboard and `portfolio` windows are not intra-minute. Positions are polled more often than the cohort is rebuilt.
-
 ## License
 
 MIT, Copyright (c) 2026 Prafull Joshi. IBM Plex fonts are included under the SIL Open Font License (see `site/fonts/OFL.txt`).
+
+## Disclaimer
+
+This project describes public Hyperliquid positions at the time of each snapshot. It is **not financial advice**, **not a forecast**, and **not a recommendation** to open or close any position. Positions can be hedges, inventory, or copy-flow. The reconstructed backtest can look profitable for reasons that have nothing to do with skill; the Limits section says why. You can lose money. Do not trade on this reading.
+

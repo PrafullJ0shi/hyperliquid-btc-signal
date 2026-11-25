@@ -14,8 +14,11 @@ data/*.db-shm
 
 PROGRESS.md
 
-.pytest_cache/
-
 # 30-day backtest: raw downloads and build tooling
 research/backtest-30d/raw/
 research/backtest-30d/node_modules/
+
+.coverage
+htmlcov/
+.ruff_cache/
+.tox/

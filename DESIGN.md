@@ -129,7 +129,7 @@ Empty, loading, and stale-data states are typographic, not skeleton cards: “No
 
 The README banner is the same plate language: paper ground, hairlines, small-caps, monospaced figures, a still drawing of the inclination sphere, and the series title. It carries its own background so it works in light and dark mode.
 
-The demo GIF is a recording of the real page (verdict, sphere, sparkline, table), not a marketing mock, in the same palette. No emoji, no transitions that the site itself does not have.
+The README shows stills of the live plate's three tabs (Signal, Flows, Backtest), cropped from the real page, in the same palette. No emoji, no transitions that the site itself does not have.
 
 ### What this page will not contain
 
