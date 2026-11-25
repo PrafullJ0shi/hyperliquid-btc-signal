@@ -306,7 +306,7 @@ $$
 **Proxy, clearly labelled.** Open interest falling while price moves sharply is what a liquidation burst looks like from outside. For each pair of stored sweeps at most 75 minutes apart, with open interest $\mathrm{OI}$ in BTC and return $r$,
 
 $$
-\mathrm{flag} \iff \left(\frac{\mathrm{OI}_t}{\mathrm{OI}_{t-1}} - 1 \le -1.5\%\ \text{and}\ |r_t| \ge 1\%\right)\ \text{or}\ \left(z_{\mathrm{OI}} \le -3\ \text{and}\ |z_r| \ge 2\right), \qquad z = \frac{x - \mathrm{med}(x)}{1.4826\,\mathrm{MAD}(x)},
+\mathrm{flag} \iff \left(\frac{\mathrm{OI}_t}{\mathrm{OI}_{t-1}} - 1 \le -0.015\ \text{and}\ |r_t| \ge 0.01\right)\ \text{or}\ \left(z_{\mathrm{OI}} \le -3\ \text{and}\ |z_r| \ge 2\right), \qquad z = \frac{x - \mathrm{med}(x)}{1.4826\,\mathrm{MAD}(x)},
 $$
 
 where the robust z-scores use the previous steps of the last seven days and need at least 24 of them. A falling price marks longs as the likely side, a rising price shorts. The amount shown, $(\mathrm{OI}_{t-1} - \mathrm{OI}_t)\,m_t$, is an **upper bound**: voluntary closes also lower open interest.
