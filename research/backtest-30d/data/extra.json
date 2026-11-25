@@ -1,0 +1,22 @@
+{
+ "count_based_p_daily": {
+  "min": 0.04878048780487805,
+  "max": 0.18181818181818182
+ },
+ "complete_wallets_only": {
+  "n_wallets": 53,
+  "p_min": 0.027482298339329123,
+  "p_max": 0.20555657112611816,
+  "hours_not_short": 0
+ },
+ "corr_dP24_next24h_return": {
+  "rho": 0.07514798446281504,
+  "n": 673
+ },
+ "corr_level_next24h_return": {
+  "rho": 0.06222916455618288,
+  "n": 697
+ },
+ "p_first_day": 0.11727524288012921,
+ "p_last_day": 0.04010649848075453
+}

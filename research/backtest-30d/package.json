@@ -1,0 +1,6 @@
+{
+  "name": "backtest-30d",
+  "private": true,
+  "description": "Build-time only: pre-renders the formulas on the site's Backtest tab to static SVG.",
+  "dependencies": { "mathjax-full": "3.2.2" }
+}

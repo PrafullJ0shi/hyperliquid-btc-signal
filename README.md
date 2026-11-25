@@ -14,7 +14,7 @@ A public, open-source instrument that answers one question: among the top 500 Hy
 
 The live plate is at [prafullj0shi.github.io/hyperliquid-btc-signal](https://prafullj0shi.github.io/hyperliquid-btc-signal/). The machine-readable snapshot is [`site/data/signal.json`](site/data/signal.json) (same file as [`data/signal.json`](data/signal.json)).
 
-Around that reading sits a **market-intelligence layer**: cohort risk grades, a liquidation map, a flip detector with a market-change watch, a position-change feed, the history of P(long) with a Bayesian posterior, price action with an EMA study, a regime detector, a fear and greed meter, funding and open interest, a fake-signal detector, contrarian mode, backtesting, a lead-lag study, and a front-running meter. All of it is computed in the same sweep from public Hyperliquid data and documented under [Methodology](#methodology).
+Around that reading sits a **market-intelligence layer**: cohort risk grades, a liquidation map, a flip detector with a market-change watch, a position-change feed, the history of P(long) with a Bayesian posterior, price action with an EMA study, a regime detector, a fear and greed meter, funding and open interest, a fake-signal detector, contrarian mode, backtesting, a lead-lag study, and a front-running meter. All of it is computed in the same sweep from public Hyperliquid data and documented under [Methodology](#methodology). A reconstructed [30-day backtest](#research-30-day-backtest) of the signal is published under [`research/`](research/backtest-30d/README.md) and on the site's Backtest tab.
 
 This is **not financial advice** and **not a forecast**. It is a descriptive reading of public positions at the issue time. It can be wrong. Do not trade on it.
 
@@ -236,6 +236,23 @@ $$
 
 $S > 0.2$ reads as FRONT-RUNNING (changes come before price moves) and $S < -0.2$ as CHASING, but only if the largest $|r_k|$ at a non-zero lag clears the noise band; otherwise the label is NO CLEAR LEAD. The live series is used once it has at least 30 paired steps; until then the reconstructed series is used and named. A companion number is the share of non-zero flows followed by a same-direction price move one hour (live) or four hours (reconstructed) later.
 
+## Research: 30-day backtest
+
+Would following this signal for 30 days have made money? A reconstructed backtest rebuilds the hourly P(long) from the fills of 100 cohort wallets and trades one unit of BTC perp on it, with the 0.045% taker fee and the hourly funding.
+
+| Rule, 30 days to 25 Nov 2026 05:30 IST | Return after fees and funding | Max drawdown |
+| --- | ---: | ---: |
+| Follow the signal, daily | +32.2% | −4.7% |
+| Always short | +32.2% | −4.7% |
+| Buy and hold BTC | −25.9% | −28.0% |
+
+**Profitable on paper, not evidence of an edge.** The signal read SHORT in all 721 hourly reads, so following it was the same trade as being short all month while BTC fell 25.4%. The window held no reversal, so it says nothing about whether the signal can call a turn. The cohort is also last month's winners, which biases it toward the side that won.
+
+- Research note, with every formula, the 30-row day-by-day table, the reasons and the caveats: [`research/backtest-30d/README.md`](research/backtest-30d/README.md)
+- Same page on the site: [Backtest tab](https://prafullj0shi.github.io/hyperliquid-btc-signal/#backtest)
+- Data: [`daily_backtest.csv`](research/backtest-30d/data/daily_backtest.csv), [`results.json`](research/backtest-30d/data/results.json), [`hourly_signal.csv`](research/backtest-30d/data/hourly_signal.csv)
+- Reproduce: `python research/backtest-30d/scripts/analyze.py`
+
 ## Limits
 
 - Everything here describes public positions. Positions can be hedges, inventory, collateral management, or copy-flow; none of it is a forecast.
@@ -290,6 +307,7 @@ A GitHub Actions workflow runs the Python sweep on a 30-minute cron and on manua
 | `data/signal.json` | Verdict, interval, top positions, and `intel` (every panel's numbers and chart series) | about 75 KB |
 | `data/history.json` | One compact row per sweep: P(long), posterior, mark, funding, OI, fear and greed, regime, flow, flips, grade, integrity | capped at 1,440 rows (30 days) |
 | `data/cohort.json` | The 500 wallets and `last_positions` (BTC size per wallet at the previous sweep) | rewritten each sweep |
+| `site/backtest/` | Backtest tab data: CSV, results, chart series and figures copied from `research/backtest-30d/` by `build_docs.py`. Static: the sweep neither writes nor deletes it | fixed |
 | `data/x_sentiment.json` | Optional. Reserved for the v2.0 X sentiment feed; absent today | not read in CI unless present |
 
 The workflow file is [`.github/workflows/sweep.yml`](.github/workflows/sweep.yml). A copy is also kept at [`docs/github-workflow-sweep.yml`](docs/github-workflow-sweep.yml).
