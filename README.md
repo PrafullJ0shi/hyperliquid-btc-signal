@@ -261,7 +261,7 @@ $$
 O^{L} = m \sum_{i} O^{L}_i \quad \text{(and likewise for } A, R, X \text{ and the short side)}
 $$
 
-Wallets that joined or left a cohort between the two snapshots are left out of that step, and a wallet whose poll failed keeps its last known size, so a failed request is never read as a close. A window of $h$ hours sums every stored step after a baseline snapshot, chosen as the stored snapshot closest to $t - h$ and accepted only within $\max(25\ \mathrm{min},\ 0.15\,h)$ of it. Otherwise the timeframe button is disabled and reads "building history".
+Wallets that joined or left a cohort between the two snapshots are left out of that step, and a wallet whose poll failed keeps its last known size, so a failed request is never read as a close. A window of $h$ hours sums every stored step after a baseline snapshot, chosen as the stored snapshot closest to $t - h$ and accepted only within $\max(25\ \mathrm{min},\ 0.15\,h)$ of it. Otherwise the timeframe button is disabled, and its note says why: too little history stored, or no sweep stored close enough to the window start (scheduled sweeps do not run at exact intervals).
 
 $$
 \Delta L = \sum_{s} \left(O^{L}_s + A^{L}_s - X^{L}_s - R^{L}_s\right), \qquad \Delta S = \sum_{s} \left(O^{S}_s + A^{S}_s - X^{S}_s - R^{S}_s\right), \qquad \mathrm{toward\ long} = \Delta L - \Delta S

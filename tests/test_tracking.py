@@ -273,3 +273,16 @@ def test_events_from_snapshots_threshold():
     ev = events_from_snapshots(snaps, now, 1_000_000.0)
     assert len(ev) == 1 and ev[0]["verb"] == "added to" and ev[0]["side"] == "SHORT"
     assert ev[0]["change_usd"] == 1_800_000.0 and ev[0]["src"] == "git"
+
+
+def test_window_gap_reason_names_the_gap():
+    from app import flow as FL
+    H = 3_600_000
+    t0 = 1_800_000_000_000
+    z = FL.pack_step(FL.flow_step({"0xab": 1.0}, {"0xab": 1.0}, 10.0))
+    rows = []
+    for t in (t0, t0 + int(1.7 * H), t0 + int(2.2 * H)):
+        rows.append({"t": t, "tp": rows[-1]["t"] if rows else None, "src": "live", "s": z, "c": None})
+    w = FL.window_flow(rows, "s", rows[-1]["t"], 1)
+    assert not w["available"]
+    assert "close enough" in w["reason"]

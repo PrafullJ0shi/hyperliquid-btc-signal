@@ -78,8 +78,8 @@
       b.setAttribute("aria-pressed", lab === S.win ? "true" : "false");
       if (!w.available) {
         b.disabled = true;
-        b.title = "Building history: " + (((w.smart || {}).reason) || "not enough stored snapshots yet.");
-        b.setAttribute("aria-label", lab + ", building history");
+        b.title = ((w.smart || {}).reason) || "Building history: not enough stored snapshots yet.";
+        b.setAttribute("aria-label", lab + ", not available");
       }
       b.addEventListener("click", function () { S.win = lab; render(); });
     });
@@ -118,7 +118,7 @@
       txt("fl-last-t", "Shorts " + money(sn, true) + " means the top cohort is " + money(Math.abs(sn)) + " " + (sn >= 0 ? "more" : "less") +
         " short than at " + clock(ws.base_ms) + "; longs " + money(ln, true) + " means it is " + money(Math.abs(ln)) + " " + (ln >= 0 ? "more" : "less") + " long.");
     } else {
-      txt("fl-last", "building history");
+      txt("fl-last", "not available");
       txt("fl-last-t", ws ? ws.reason : "No window selected.");
     }
   }
@@ -131,7 +131,7 @@
     var ws = w && w.smart;
     var tb = $("fl-flow-table");
     if (!ws || !ws.available) {
-      txt("fl-flow-kicker", "Building history");
+      txt("fl-flow-kicker", "Not available");
       txt("fl-longs", "—");
       txt("fl-shorts", "—");
       txt("fl-flow-sentence", ws ? ws.reason : "Waiting for the first two snapshots.");
@@ -205,7 +205,7 @@
   function diverge(w) {
     var box = $("chart-diverge");
     var rowsD = [["Top cohort", w.smart], ["Worst-performing cohort", w.contrast]];
-    if (!rowsD.some(function (r) { return r[1] && r[1].available; })) { H.empty(box, "Building history for this window."); return; }
+    if (!rowsD.some(function (r) { return r[1] && r[1].available; })) { H.empty(box, "No reading for this window yet."); return; }
     var s = H.surface(box, "Fig. F2. Net move toward long or short by cohort.");
     var padX = 8, top = 22, rowH = 44, bh = 12;
     var mid = Math.round(s.w / 2);
@@ -219,7 +219,7 @@
       H.text(s.svg, padX, y + 8, r[0], { size: 10, font: "IBM Plex Sans, sans-serif", fill: C.ink });
       var w0 = r[1], yb = y + 16;
       if (!w0 || !w0.available) {
-        H.text(s.svg, mid + 6, yb + 10, "building history", { size: 9 });
+        H.text(s.svg, mid + 6, yb + 10, "no reading", { size: 9 });
         return;
       }
       var v = w0.toward_long;

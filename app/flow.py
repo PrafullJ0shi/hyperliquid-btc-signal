@@ -234,6 +234,17 @@ def short_share(totals: Optional[dict[str, Any]]) -> Optional[float]:
     return _f(totals.get("short_ntl")) / tot if tot > 0 else None
 
 
+def _gap_reason(have_h: float, hours: float, base_t: Optional[int], target: float, tol: int) -> str:
+    """Why a window is unavailable, in plain words."""
+    if have_h < 1 / 60:
+        return "Building history: the first snapshot is stored; flows start with the next sweep."
+    if base_t is not None and have_h * HOUR_MS >= hours * HOUR_MS - tol:
+        off = round(abs(base_t - target) / 60_000)
+        return (f"No sweep was stored close enough to {_dur(hours)} ago (nearest {off} min off, "
+                f"at most {round(tol / 60_000)} min allowed); sweeps run on an irregular schedule.")
+    return f"Building history: {_dur(have_h)} of {_dur(hours)} stored."
+
+
 def window_flow(log: Sequence[dict[str, Any]], key: str, now_ms: int, hours: float) -> dict[str, Any]:
     """Sum the steps of one cohort over the last `hours`.
 
@@ -259,8 +270,7 @@ def window_flow(log: Sequence[dict[str, Any]], key: str, now_ms: int, hours: flo
         return {
             "window": label,
             "available": False,
-            "reason": (f"Building history: {_dur(have_h)} of {_dur(hours)} stored." if have_h >= 1 / 60 else
-                       "Building history: the first snapshot is stored; flows start with the next sweep."),
+            "reason": _gap_reason(have_h, hours, base_t, target, tol),
             "have_hours": round(have_h, 2),
         }
     steps = [r for r in rows if r["t"] > base_t]
@@ -399,7 +409,7 @@ def compare_sentence(label: str, a: dict[str, Any], b: dict[str, Any]) -> str:
         return "moved toward " + ("long" if w["toward_long"] > 0 else "short")
     da, db = d(a), d(b)
     if da is None and db is None:
-        return "Both cohorts are still building history for this window."
+        return "Neither cohort has a reading for this window yet."
     parts = []
     if da:
         parts.append(f"the top cohort {da}")
