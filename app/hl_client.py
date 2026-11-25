@@ -182,6 +182,14 @@ class HyperliquidClient:
             config.WEIGHT_FILLS, 20,
         )
 
+    async def user_fills_by_time(self, address: str, start_ms: int, end_ms: Optional[int] = None) -> list[dict[str, Any]]:
+        """Fills in [start, end] for one wallet (one page, up to 2,000 rows, aggregated by time)."""
+        body: dict[str, Any] = {"type": "userFillsByTime", "user": address,
+                                "startTime": int(start_ms), "aggregateByTime": True}
+        if end_ms is not None:
+            body["endTime"] = int(end_ms)
+        return await self._info_items(body, config.WEIGHT_FILLS, 20)
+
 
 def window_from_row(row: dict[str, Any], name: str) -> dict[str, str]:
     raw = row.get("windowPerformances") or []
@@ -254,6 +262,8 @@ def extract_btc_position(state: dict[str, Any]) -> dict[str, Any]:
         "total_ntl": None,
         "other_signed_ntl": 0.0,
         "n_positions": 0,
+        "margin_used": None,
+        "roe": None,
     }
     try:
         found["total_ntl"] = abs(float((state.get("marginSummary") or {}).get("totalNtlPos")))
@@ -297,6 +307,8 @@ def extract_btc_position(state: dict[str, Any]) -> dict[str, Any]:
                 "leverage": _opt_float(lev.get("value") if isinstance(lev, dict) else lev),
                 "unrealized_pnl": _opt_float(pos.get("unrealizedPnl")),
                 "liquidation_px": _opt_float(pos.get("liquidationPx")),
+                "margin_used": _opt_float(pos.get("marginUsed")),
+                "roe": _opt_float(pos.get("returnOnEquity")),
             }
         )
         break

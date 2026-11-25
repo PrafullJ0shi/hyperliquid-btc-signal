@@ -22,6 +22,10 @@ from .hl_client import (
 )
 from . import intel as I
 from .layer import build_intel, fetch_market, refresh_backtest
+from . import flow as FL
+from .tracking import run_tracking
+from .backfill import seed_state
+from . import tape as TP
 from .signal import compute_signal
 from .store import (
     load_cohort,
@@ -161,16 +165,26 @@ async def build_cohort(
     }
 
 
+class _SkipCtx(Exception):
+    pass
+
+
 async def poll_positions(
     client: HyperliquidClient,
     traders: list[dict[str, Any]],
+    fetch_ctx: bool = True,
+    label: str = "clearinghouseState",
 ) -> tuple[list[dict[str, Any]], Optional[float], dict[str, Any]]:
     mark = None
     ctx: dict[str, Any] = {}
     try:
+        if not fetch_ctx:
+            raise _SkipCtx()
         ctxs = await client.meta_and_asset_ctxs()
         mark = btc_mark_from_ctxs(ctxs)
         ctx = btc_ctx_from_ctxs(ctxs) or {}
+    except _SkipCtx:
+        pass
     except Exception as exc:  # noqa: BLE001
         log.warning("metaAndAssetCtxs failed: %s; trying allMids", exc)
         try:
@@ -210,15 +224,18 @@ async def poll_positions(
             "leverage": extracted.get("leverage"),
             "unrealized_pnl": extracted.get("unrealized_pnl"),
             "liquidation_px": extracted.get("liquidation_px"),
+            "margin_used": extracted.get("margin_used"),
+            "roe": extracted.get("roe"),
             "total_ntl": extracted.get("total_ntl"),
             "other_signed_ntl": extracted.get("other_signed_ntl") or 0.0,
             "n_positions": extracted.get("n_positions") or 0,
             "turnover": row.get("turnover"),
             "mark": mark,
+            "poll_error": bool(extracted.get("error")),
         }
 
-    log.info("Polling clearinghouseState for %s wallets", len(traders))
-    observed = await _map_progress("clearinghouseState", traders, one)
+    log.info("Polling clearinghouseState for %s wallets (%s)", len(traders), label)
+    observed = await _map_progress(label, traders, one)
     return observed, mark, ctx
 
 
@@ -310,12 +327,54 @@ async def run_sweep(*, force_portfolio: bool = False) -> dict[str, Any]:
         observed, mark, ctx = await poll_positions(client, traders)
         timings["clearinghouse_sec"] = round(time.monotonic() - t2, 2)
 
+        t2b = time.monotonic()
+        contrast = FL.contrast_candidates(
+            rows, min_equity=config.MIN_EQUITY, max_turnover=config.MAX_TURNOVER,
+            exclude={t["address"] for t in traders}, n=config.CONTRAST_N,
+        )
+        contrast_observed, _, _ = await poll_positions(client, contrast, fetch_ctx=False,
+                                                       label="clearinghouseState (worst cohort)")
+        for r in contrast_observed:
+            r["mark"] = mark
+        timings["contrast_sec"] = round(time.monotonic() - t2b, 2)
+
         t3 = time.monotonic()
         now_ms = int(time.time() * 1000)
         market = await fetch_market(client, now_ms)
         prior_bt = (previous_payload.get("intel") or {}).get("backtest")
         backtest = await refresh_backtest(client, observed, market.get("candles_1h") or [], prior_bt, now_ms)
         timings["market_sec"] = round(time.monotonic() - t3, 2)
+
+        t4 = time.monotonic()
+        tracker_block, tracker_state = None, {}
+        if not previous_cohort.get("flow_log"):
+            try:
+                seeded = seed_state(config.ROOT, previous_cohort, int(time.time() * 1000), TP.WHALE_POS_USD)
+                if seeded.get("flow_log"):
+                    previous_cohort["flow_log"] = seeded["flow_log"]
+                if seeded.get("whales") and not previous_cohort.get("tape"):
+                    previous_cohort["tape"] = {"whales": seeded["whales"]}
+            except Exception as exc:  # noqa: BLE001
+                log.warning("Flow log seed failed: %s", exc)
+        try:
+            tracker_block, tracker_state = await run_tracking(
+                client=client,
+                coin=config.TRACK_COIN,
+                smart_observed=observed,
+                contrast_observed=contrast_observed,
+                smart_traders=traders,
+                contrast_traders=contrast,
+                lb_rows=rows,
+                mark=mark,
+                state=previous_cohort,
+                history=load_history_json(),
+                oi_now=_float(ctx.get("openInterest"), 0.0) or None,
+                candles_15m=market.get("candles_15m") or [],
+                now_ms=int(time.time() * 1000),
+            )
+        except Exception as exc:  # noqa: BLE001 — the consensus reading must still publish
+            log.exception("Tracking layer failed: %s", exc)
+        timings["tracking_sec"] = round(time.monotonic() - t4, 2)
         timings["sweep_sec"] = round(time.monotonic() - started, 2)
         log.info(
             "BTC mark %s; sweep wall time %.1fs (portfolio %.1fs, positions %.1fs, market %.1fs)",
@@ -348,6 +407,8 @@ async def run_sweep(*, force_portfolio: bool = False) -> dict[str, Any]:
         x_raw=load_x_sentiment(),
         now_ms=int(issued.timestamp() * 1000),
     )
+    if tracker_block is not None:
+        intel["tracker"] = tracker_block
     payload["intel"] = intel
     save_snapshot(payload)
     post_by_ts = row_extra.pop("_post_by_ts", {})
@@ -360,6 +421,11 @@ async def run_sweep(*, force_portfolio: bool = False) -> dict[str, Any]:
     write_json_files(payload, history)
 
     cohort = dict(cohort)
+    for k in ("tracker_positions", "flow_log", "tape"):
+        if k in tracker_state:
+            cohort[k] = tracker_state[k]
+        elif previous_cohort.get(k) is not None:
+            cohort[k] = previous_cohort[k]
     cohort["last_positions"] = {
         "ts_utc": payload["ts_utc"],
         "mark": mark,

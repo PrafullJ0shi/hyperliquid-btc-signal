@@ -173,7 +173,8 @@ def load_latest_json() -> Optional[dict[str, Any]]:
 
 def write_cohort(cohort: dict[str, Any]) -> None:
     config.DATA_DIR.mkdir(parents=True, exist_ok=True)
-    config.COHORT_JSON.write_text(json.dumps(cohort, indent=2))
+    # Compact: the file carries per-wallet snapshots and the flow log.
+    config.COHORT_JSON.write_text(json.dumps(cohort, separators=(",", ":")))
 
 
 def load_cohort() -> Optional[dict[str, Any]]:

@@ -90,5 +90,17 @@ BACKTEST_WALLETS = 30
 BACKTEST_DAYS = 7
 BACKTEST_TTL_SEC = 24 * 60 * 60
 
+# Flow box, cohort comparison, whale tape, liquidations (app/tracking.py)
+TRACK_COIN = "BTC"
+CONTRAST_N = 500
+# userFillsByTime is requested only for wallets whose size moved this much since the last snapshot.
+FILL_FETCH_MIN_USD = 25_000.0
+FILL_FETCH_MAX = 50
+FILL_LOOKBACK_H = 4.0
+# Extra wallets scanned each sweep for liquidation fills: wallets that absorbed BTC
+# liquidations before first, then a round-robin through both cohorts.
+LIQ_SCAN_ABSORBERS = 8
+LIQ_SCAN_TOTAL = 16
+
 # HTTP
 REQUEST_TIMEOUT = HTTP_TIMEOUT
