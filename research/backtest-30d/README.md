@@ -133,7 +133,7 @@ Following the signal once a day for 30 days would have returned **+32.2%** after
 
 <img src="figures/equity_curve_30d.png" alt="Cumulative P&L of following the signal, always short and buy and hold over 30 days; P(long) against the thresholds; BTC price." width="100%">
 
-*Fig. B1. Cumulative P&L of each rule, and below it hourly $p_t$ against the 0.40 and 0.60 thresholds (the PNG adds the BTC price). The primary line lies on top of the always-short line because the position never changed.*
+*Fig. B1. Cumulative P&L of each rule, and below it hourly P(long) against the 0.40 and 0.60 thresholds (the PNG adds the BTC price). The primary line lies on top of the always-short line because the position never changed.*
 
 ### 4.1 Day by day
 

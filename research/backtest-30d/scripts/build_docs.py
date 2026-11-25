@@ -229,7 +229,7 @@ def content():
     a(("p", f"Following the signal once a day for 30 days would have returned **{pc(D['total_return'])}** after fees and funding, against **{pc(HOLD['total_return'])}** for holding BTC. "
             f"The signal read SHORT at every one of the {P['hours']} hourly reads, with $p_t$ between {P['p_min']:.3f} and {P['p_max']:.3f}, so it never traded again after opening a short."))
     a(("table", STAT_HEAD, STAT_ROWS, "lrrrrrr", "Table B1. Statistics for the 30 days to 25 Nov 2026 05:30 IST. Returns are after the 0.045% taker fee and hourly funding. Sharpe-ish is annualised."))
-    a(("fig", "equity", "Fig. B1. Cumulative P&L of each rule, and below it hourly $p_t$ against the 0.40 and 0.60 thresholds (the PNG adds the BTC price). "
+    a(("fig", "equity", "Fig. B1. Cumulative P&L of each rule, and below it hourly P(long) against the 0.40 and 0.60 thresholds (the PNG adds the BTC price). "
                         "The primary line lies on top of the always-short line because the position never changed."))
     a(("h3", "bt-days", "4.1 Day by day"))
     a(("table", DAY_HEAD, day_rows(), "rllrlrrrrrrr", "Table B2. All 30 daily steps. The signal is read at 05:30 IST (00:00 UTC) on the date shown, and the position is held to 05:30 IST the next day. "
