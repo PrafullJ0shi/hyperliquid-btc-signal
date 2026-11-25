@@ -1,9 +1,10 @@
-/* Hash-routed tabs: #signal (default) and #backtest. Any #bt-* anchor opens the Backtest tab. */
+/* Hash-routed tabs: #signal (default), #flows and #backtest. An anchor inside a panel opens that panel. */
 (function () {
   "use strict";
-  var NAMES = ["signal", "backtest"];
+  var NAMES = ["signal", "flows", "backtest"];
   var TITLES = {
     signal: null,
+    flows: "Flows, whales and liquidations, Hyperliquid BTC",
     backtest: "Backtest: 30 days of following the signal, Hyperliquid BTC consensus"
   };
   var tabs = {}, panels = {}, signalTitle = null, current = null;
@@ -13,9 +14,10 @@
   function routeFromHash() {
     var h = decodeURIComponent((location.hash || "").replace(/^#/, ""));
     if (!h || h === "signal") return { tab: "signal", anchor: null };
-    if (h === "backtest") return { tab: "backtest", anchor: null };
+    if (h === "backtest" || h === "flows") return { tab: h, anchor: null };
     var el = $(h);
     if (el && panels.backtest.contains(el)) return { tab: "backtest", anchor: el };
+    if (el && panels.flows && panels.flows.contains(el)) return { tab: "flows", anchor: el };
     return { tab: "signal", anchor: el && panels.signal.contains(el) ? el : null };
   }
 
@@ -31,6 +33,10 @@
     if (name === "backtest") {
       document.title = TITLES.backtest;
       if (typeof window.renderBacktest === "function") window.renderBacktest();
+    } else if (name === "flows") {
+      document.title = TITLES.flows;
+      // Charts need a visible container to measure their width.
+      if (changed && typeof window.renderFlows === "function") window.renderFlows();
     } else {
       if (signalTitle) document.title = signalTitle;
       // Charts drawn while this panel was hidden have no width: redraw them.
@@ -49,7 +55,7 @@
   }
 
   function select(name) {
-    var want = name === "signal" ? "#signal" : "#backtest";
+    var want = "#" + name;
     if (location.hash === want || (name === "signal" && !location.hash)) { show(name, null, true); return; }
     location.hash = want;
   }
@@ -57,6 +63,7 @@
   function boot() {
     NAMES.forEach(function (n) { tabs[n] = $("tab-" + n); panels[n] = $("panel-" + n); });
     if (!tabs.signal || !tabs.backtest) return;
+    if (!tabs.flows || !panels.flows) NAMES = NAMES.filter(function (n) { return n !== "flows"; });
     signalTitle = document.title;
     NAMES.forEach(function (n, i) {
       tabs[n].addEventListener("click", function () { select(n); });
@@ -79,9 +86,9 @@
     if (t && window.MutationObserver) {
       new MutationObserver(function () {
         var cur = document.title;
-        if (cur !== TITLES.backtest) {
+        if (cur !== TITLES.backtest && cur !== TITLES.flows) {
           signalTitle = cur;
-          if (current === "backtest") document.title = TITLES.backtest;
+          if (current === "backtest" || current === "flows") document.title = TITLES[current];
         }
       }).observe(t, { childList: true });
     }

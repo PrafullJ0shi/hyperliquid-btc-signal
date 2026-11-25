@@ -169,3 +169,15 @@ The sheet gains one tab bar under the document head: **Signal** and **Backtest**
 - **Formulas.** Pre-rendered at build time to static inline SVG (`currentColor`), so there is no runtime script, no CDN and no extra font. Each display formula has an `aria-label` with its meaning in words. Wide formulas scroll inside their own container instead of widening the page.
 - **Charts.** The same hand-built SVG helpers as the Signal tab: the accent line is the primary strategy, hourly in grey, always-short dotted, buy and hold dashed. P(long) is drawn against dashed 0.40 and 0.60 thresholds. The long Table B2 scrolls horizontally inside a focusable region on narrow screens.
 - **Data.** The page reads `backtest/backtest.json` and links to the CSV and results in `backtest/`. These files are written by `research/backtest-30d/scripts/build_docs.py`, not by the sweep, and the sweep workflow only stages `data/` and `site/data/`.
+
+## Rev 1.2: the Flows tab
+
+A third tab, between Signal and Backtest, for flows, whales, and liquidations. It is the same issued sheet, not a dashboard.
+
+- **Order.** How to read this (three numbered notes with the reading they explain), position flow with a timeframe control, top cohort versus worst-performing cohort with a diverging figure, the whale tape, big liquidations with a wave reading and its proxy, limits.
+- **Numbered notes.** A small square numeral in accent, then a small-caps label, the reading in Plex Mono, and one plain sentence. Every panel has its own numbered "how to read" list in muted type.
+- **Timeframe control.** The existing square segmented toggle, in Plex Mono. A window the stored history cannot support is disabled and struck through, with a "building history" title; it never shows an invented number.
+- **Flow table.** Two rows (longs, shorts) by five columns (opened, added, closed, trimmed, net), compact mono amounts in USD so it fits a 390px screen without scrolling.
+- **Cohort comparison.** Two columns separated by hairlines, not cards: headline sentence, net move ("SHORT −$2.43m"), split before and after, the filled/open split rule, wallets traded. The diverging figure draws long as filled ink and short as an open outline from an accent centre line.
+- **Whale tape.** A ruled list, one entry per wallet: clock time in IST and age, a sentence ("Added $2.20m to a LONG"), a before/now bar pair (open outline before, filled ink now), then facts as small-caps labels with mono values that wrap. An order worked over time gets a single accent left rule, the only emphasis in the entry.
+- **Liquidations.** A typographic wave reading (accent only when a wave or proxy flag is on), an hourly figure with longs as filled bars above the axis and shorts as open bars below, and a table. The page says plainly that the public API has no market-wide liquidation feed.

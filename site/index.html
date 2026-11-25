@@ -7,7 +7,7 @@
   <meta name="description" content="A public-data reading of whether the top 500 one-month leaders on Hyperliquid are, on balance, long or short Bitcoin. Not financial advice.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
-  <noscript><style>#panel-backtest[hidden]{display:block!important}.tabs{display:none!important}</style></noscript>
+  <noscript><style>#panel-backtest[hidden],#panel-flows[hidden]{display:block!important}.tabs{display:none!important}</style></noscript>
 </head>
 <body>
   <div class="sheet">
@@ -26,6 +26,7 @@
     <nav class="tabs" aria-label="Sections">
       <div class="tablist" role="tablist" aria-label="Plate sections">
         <button type="button" role="tab" id="tab-signal" aria-controls="panel-signal" aria-selected="true">Signal</button>
+        <button type="button" role="tab" id="tab-flows" aria-controls="panel-flows" aria-selected="false" tabindex="-1">Flows</button>
         <button type="button" role="tab" id="tab-backtest" aria-controls="panel-backtest" aria-selected="false" tabindex="-1">Backtest</button>
       </div>
     </nav>
@@ -362,6 +363,146 @@
     </footer>
     </div>
 
+    <div id="panel-flows" class="tabpanel" role="tabpanel" aria-labelledby="tab-flows" hidden>
+    <p class="kicker bt-kicker">Flows, whales and liquidations · BTC perpetual</p>
+    <h1 id="fl-top" tabindex="-1">Who added to Bitcoin longs and shorts, and who was forced out</h1>
+    <p class="lede">
+      Two groups of Hyperliquid wallets are compared at every sweep: the <strong>top cohort</strong>
+      (the 500 best one-month perp PnL wallets used for the Signal) and the <strong>worst-performing cohort</strong>
+      (the 500 largest one-month losses, same equity floor and turnover cap). Every figure below comes from public
+      Hyperliquid endpoints. <span id="fl-issued" class="mono"></span>
+    </p>
+    <p id="fl-status" class="status" hidden></p>
+
+    <section class="fl-reading" aria-labelledby="fl-read-title">
+      <h2 class="block-title" id="fl-read-title">How to read this</h2>
+      <ol class="fl-explain">
+        <li>
+          <span class="fl-n mono">1</span>
+          <div>
+            <p class="fl-k">The main number</p>
+            <p class="fl-big mono" id="fl-main">—</p>
+            <p class="fl-t" id="fl-main-t">Waiting for a snapshot.</p>
+          </div>
+        </li>
+        <li>
+          <span class="fl-n mono">2</span>
+          <div>
+            <p class="fl-k">The money on each side</p>
+            <p class="fl-mid mono" id="fl-sides">—</p>
+            <p class="fl-t" id="fl-sides-t"></p>
+          </div>
+        </li>
+        <li>
+          <span class="fl-n mono">3</span>
+          <div>
+            <p class="fl-k" id="fl-last-k">The last 4 hours</p>
+            <p class="fl-mid mono" id="fl-last">—</p>
+            <p class="fl-t" id="fl-last-t"></p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="fl-block" aria-labelledby="fl-flow-title" id="fl-flow">
+      <div class="fl-head">
+        <h2 class="block-title" id="fl-flow-title">Position flow, <span id="fl-win-name">past 4h</span></h2>
+        <div class="toggle fl-tf" role="group" aria-label="Timeframe" id="fl-tf"></div>
+      </div>
+      <p class="fl-kicker" id="fl-flow-kicker">—</p>
+      <div class="fl-pair">
+        <div><p class="fl-k">Longs</p><p class="fl-big mono" id="fl-longs">—</p></div>
+        <div><p class="fl-k">Shorts</p><p class="fl-big mono" id="fl-shorts">—</p></div>
+      </div>
+      <p class="note wide" id="fl-flow-sentence"></p>
+      <figure class="fig">
+        <table class="data mono fl-table" id="fl-flow-table"><tbody><tr><td>Waiting for a snapshot.</td></tr></tbody></table>
+        <figcaption>
+          Table F1. Top cohort, BTC notional moved in the window, valued at the mark of each step. It counts trades, not
+          price moves. Opened: a new position or the new side after a flip. Added: an existing position made larger.
+          Closed: a position taken to zero, or the old side of a flip. Trimmed: part of a position cut within one
+          snapshot step (about 30 minutes). Net = opened + added − closed − trimmed.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="fl-block" aria-labelledby="fl-cmp-title" id="fl-cohorts">
+      <h2 class="block-title" id="fl-cmp-title">Top cohort versus worst-performing cohort</h2>
+      <p class="note wide" id="fl-compare">—</p>
+      <div class="fl-cohorts">
+        <div class="fl-cohort" id="fl-c-smart"></div>
+        <div class="fl-cohort" id="fl-c-contrast"></div>
+      </div>
+      <figure class="fig">
+        <div class="chart" id="chart-diverge" style="height:118px"></div>
+        <figcaption>
+          Fig. F2. Net move of each cohort in the selected window, from a centre line: right of centre is toward long
+          (longs added or shorts cut), left is toward short. Net toward long = longs net − shorts net.
+        </figcaption>
+      </figure>
+      <ol class="fl-howto">
+        <li>The split is the share of a cohort's open BTC notional that is short, before and after the window.</li>
+        <li>Wallets traded counts the wallets whose BTC size changed at least once in the window.</li>
+        <li>When the two cohorts move in opposite directions, the top cohort is the one with a record of being right this month; the worst-performing cohort is a contrast, not a signal to copy.</li>
+      </ol>
+    </section>
+
+    <section class="fl-block" aria-labelledby="fl-whale-title" id="fl-whales">
+      <div class="fl-head">
+        <h2 class="block-title" id="fl-whale-title">Whale tape: large position changes and orders worked over time</h2>
+        <div class="toggle" role="group" aria-label="Cohort filter" id="fl-wf">
+          <button type="button" data-f="all" aria-pressed="true">All</button>
+          <button type="button" data-f="smart" aria-pressed="false">Top</button>
+          <button type="button" data-f="contrast" aria-pressed="false">Worst</button>
+        </div>
+      </div>
+      <ol class="fl-howto">
+        <li>Each entry is one wallet. Position entries compare two snapshots and show the size before and now.</li>
+        <li>A worked order is many same-side orders from one wallet that add up to a large amount: a native Hyperliquid TWAP, or a TWAP-like pattern.</li>
+        <li>Rank is the wallet's place in its cohort (top cohort: by one-month perp PnL; worst cohort: by size of loss).</li>
+      </ol>
+      <ul class="fl-tape" id="fl-tape"><li class="fl-empty">Waiting for a snapshot.</li></ul>
+      <p class="cap-small" id="fl-tape-rule"></p>
+    </section>
+
+    <section class="fl-block" aria-labelledby="fl-liq-title" id="fl-liqs">
+      <h2 class="block-title" id="fl-liq-title">Big liquidations and liquidation waves</h2>
+      <p class="big-read" id="fl-wave">—</p>
+      <p class="note wide" id="fl-wave-t"></p>
+      <figure class="fig">
+        <div class="chart" id="chart-liqs" style="height:150px"></div>
+        <figcaption>
+          Fig. F3. Liquidated BTC notional seen in tracked wallets' fills, per hour (IST), for up to 48 hours from the start of observation. Filled bars:
+          longs liquidated. Open bars: shorts liquidated. The dashed rule is the wave threshold for one hour.
+        </figcaption>
+      </figure>
+      <figure class="fig">
+        <table class="data mono fl-table" id="fl-liq-table"><tbody><tr><td>Waiting for a snapshot.</td></tr></tbody></table>
+        <figcaption id="fl-liq-cap">Table F2. Largest recent liquidations seen.</figcaption>
+      </figure>
+      <h3 class="block-title">Proxy: open interest falling during a sharp move</h3>
+      <p class="note wide" id="fl-proxy"></p>
+      <ol class="fl-howto">
+        <li>A liquidation is a position closed by the exchange because its margin ran out. Many in one hour is a wave.</li>
+        <li>Hyperliquid's public API has no market-wide liquidation feed, so the counts above are what 1,000 tracked wallets' fills reveal: a lower bound.</li>
+        <li>The proxy row is an upper bound: open interest also falls when traders close by choice.</li>
+      </ol>
+    </section>
+
+    <section class="fl-block" aria-labelledby="fl-lim-title">
+      <h2 class="block-title" id="fl-lim-title">Limits</h2>
+      <ul class="limits" id="fl-limits"></ul>
+      <p class="cap-small">
+        Formulas and thresholds are in the
+        <a href="https://github.com/PrafullJ0shi/hyperliquid-btc-signal#flows-whales-and-liquidations">README methodology</a>.
+        Machine-readable data: <a href="data/signal.json"><code>data/signal.json</code></a>, key <code>intel.tracker</code>.
+      </p>
+      <p class="disclaimer">
+        Not financial advice and not a forecast. These are descriptive readings of public positions and fills.
+      </p>
+    </section>
+    </div>
+
     <div id="panel-backtest" class="tabpanel" role="tabpanel" aria-labelledby="tab-backtest" hidden>
 <!-- BACKTEST:START (generated by research/backtest-30d/scripts/build_docs.py) -->
 <p class="kicker bt-kicker">Research note, 25 November 2026</p>
@@ -448,6 +589,7 @@ python research/backtest-30d/scripts/fetch.py
   <script src="js/charts.js"></script>
   <script src="js/intel.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/flows.js"></script>
   <script src="js/backtest.js"></script>
   <script src="js/tabs.js"></script>
 </body>

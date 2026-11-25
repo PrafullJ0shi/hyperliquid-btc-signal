@@ -14,7 +14,7 @@ A public, open-source instrument that answers one question: among the top 500 Hy
 
 The live plate is at [prafullj0shi.github.io/hyperliquid-btc-signal](https://prafullj0shi.github.io/hyperliquid-btc-signal/). The machine-readable snapshot is [`site/data/signal.json`](site/data/signal.json) (same file as [`data/signal.json`](data/signal.json)).
 
-Around that reading sits a **market-intelligence layer**: cohort risk grades, a liquidation map, a flip detector with a market-change watch, a position-change feed, the history of P(long) with a Bayesian posterior, price action with an EMA study, a regime detector, a fear and greed meter, funding and open interest, a fake-signal detector, contrarian mode, backtesting, a lead-lag study, and a front-running meter. All of it is computed in the same sweep from public Hyperliquid data and documented under [Methodology](#methodology). A reconstructed [30-day backtest](#research-30-day-backtest) of the signal is published under [`research/`](research/backtest-30d/README.md) and on the site's Backtest tab.
+Around that reading sits a **market-intelligence layer**: cohort risk grades, a liquidation map, a flip detector with a market-change watch, a position-change feed, the history of P(long) with a Bayesian posterior, price action with an EMA study, a regime detector, a fear and greed meter, funding and open interest, a fake-signal detector, contrarian mode, backtesting, a lead-lag study, and a front-running meter. A **Flows** tab adds a past-4-hour flow box (opened, added, closed, trimmed) with 1h to 1w timeframes, the top cohort set against the worst-performing cohort, a whale tape with orders worked over time, and big liquidations with a wave detector; see [Flows, whales and liquidations](#flows-whales-and-liquidations). All of it is computed in the same sweep from public Hyperliquid data and documented under [Methodology](#methodology). A reconstructed [30-day backtest](#research-30-day-backtest) of the signal is published under [`research/`](research/backtest-30d/README.md) and on the site's Backtest tab.
 
 This is **not financial advice** and **not a forecast**. It is a descriptive reading of public positions at the issue time. It can be wrong. Do not trade on it.
 
@@ -236,6 +236,85 @@ $$
 
 $S > 0.2$ reads as FRONT-RUNNING (changes come before price moves) and $S < -0.2$ as CHASING, but only if the largest $|r_k|$ at a non-zero lag clears the noise band; otherwise the label is NO CLEAR LEAD. The live series is used once it has at least 30 paired steps; until then the reconstructed series is used and named. A companion number is the share of non-zero flows followed by a same-direction price move one hour (live) or four hours (reconstructed) later.
 
+## Flows, whales and liquidations
+
+The site's **Flows** tab ([live](https://prafullj0shi.github.io/hyperliquid-btc-signal/#flows)) answers four questions about Bitcoin perpetuals from the same public data: which way the money moved in the last few hours, whether the best and the worst traders moved the same way, which single wallets made large moves (including one large order worked over time), and whether a wave of liquidations is under way. Everything is in `intel.tracker` of [`data/signal.json`](data/signal.json); the code is in [`app/flow.py`](app/flow.py), [`app/tape.py`](app/tape.py) and [`app/tracking.py`](app/tracking.py). The coin is a parameter (`TRACK_COIN`), so other perpetuals can be added later.
+
+### Two cohorts `[intel.tracker.cohorts]`
+
+- **Top cohort** $\mathcal{T}$: the 500 wallets used for the Signal (best one-month perp PnL, equity at least USD 10,000, month volume at most 100 times equity).
+- **Worst-performing cohort** $\mathcal{W}$: from the same leaderboard file, wallets with month PnL below zero, the same equity floor and turnover cap, sorted by month PnL from the largest loss, the first 500 not already in $\mathcal{T}$. It is a contrast group, labelled as such on the page, and is not ranked with `portfolio`, so its month PnL is whole-account rather than perp-only.
+
+Both cohorts are polled with `clearinghouseState` at every sweep.
+
+### Position flow `[intel.tracker.flow]`
+
+For wallet $i$ present in two consecutive snapshots, let $p_i$ and $c_i$ be its signed BTC size before and after, and $m$ the BTC mark at the later snapshot. The change is split by side:
+
+$$
+O^{L}_i = c_i\,[p_i \le 0 < c_i], \qquad A^{L}_i = (c_i - p_i)\,[0 < p_i \le c_i], \qquad R^{L}_i = (p_i - c_i)\,[0 < c_i < p_i], \qquad X^{L}_i = p_i\,[c_i \le 0 < p_i]
+$$
+
+for opened, added, trimmed, and closed longs, where $[\cdot]$ is 1 when the condition holds and 0 otherwise. The short side is the mirror image with $|p_i|$ and $|c_i|$. A flip closes the old side in full and opens the new side in full. Dollar amounts are sizes times the mark, so a step **counts trades, not price moves**:
+
+$$
+O^{L} = m \sum_{i} O^{L}_i \quad \text{(and likewise for } A, R, X \text{ and the short side)}
+$$
+
+Wallets that joined or left a cohort between the two snapshots are left out of that step, and a wallet whose poll failed keeps its last known size, so a failed request is never read as a close. A window of $h$ hours sums every stored step after a baseline snapshot, chosen as the stored snapshot closest to $t - h$ and accepted only within $\max(25\ \mathrm{min},\ 0.15\,h)$ of it. Otherwise the timeframe button is disabled and reads "building history".
+
+$$
+\Delta L = \sum_{s} \left(O^{L}_s + A^{L}_s - X^{L}_s - R^{L}_s\right), \qquad \Delta S = \sum_{s} \left(O^{S}_s + A^{S}_s - X^{S}_s - R^{S}_s\right), \qquad \mathrm{toward\ long} = \Delta L - \Delta S
+$$
+
+"Longs +18.37m" therefore means the cohort holds USD 18.37m more in longs than at the baseline because of trades in the window. The split shown before and after is the short share of open BTC notional,
+
+$$
+\sigma = \frac{N_{S}}{N_{L} + N_{S}},
+$$
+
+which does not depend on the price level because both sides are valued at the same mark. "Wallets traded" counts distinct wallets with any size change in the window. The headline sentence sets the net move against the BTC price change over the same window (flat if it is within 0.3%).
+
+The step log (`flow_log` in `data/cohort.json`) keeps eight days, enough for the one-week window. It was seeded once by [`scripts/backfill_flow.py`](scripts/backfill_flow.py) from the per-wallet snapshots already stored in this repository's git history, which gives exactly the steps the live sweep would have computed; the worst-performing cohort has no stored snapshots before this release and builds its history from the first sweep.
+
+### Whale tape `[intel.tracker.whales]`
+
+Three kinds of entry, kept for seven days:
+
+1. **Position change**: $|c_i - p_i|\,m \ge \mathrm{USD}\ 1{,}000{,}000$ between two snapshots. The entry shows the verb (opened, added to, trimmed, closed, flipped to), the size before and now, leverage and margin type, margin, the fill price, position PnL, the wallet's cohort rank, its all-time and 30-day leaderboard PnL, and a link to the wallet on the Hyperliquid explorer. The fill price is the volume-weighted price of the wallet's same-direction fills in the step, $\bar{P} = \sum_j P_j q_j / \sum_j q_j$; without fills, the snapshot mark is shown and labelled as such.
+2. **Large order**: all fills sharing one order id with notional at least USD 1,000,000.
+3. **Order worked over time**: either a native Hyperliquid TWAP (fills that carry a `twapId`, grouped by that id) or a TWAP-like pattern. A pattern is a maximal run of same-side orders $o_1, \dots, o_n$ from one wallet, with no opposite-side order between them and no pause above 45 minutes, that satisfies:
+
+$$
+n \ge 5, \qquad t_n - t_1 \ge 15\ \mathrm{min}, \qquad \sum_{j} N_j \ge \mathrm{USD}\ 1{,}000{,}000, \qquad \frac{\max_j N_j}{\sum_j N_j} \le 0.5,
+$$
+
+where $N_j$ is the notional of order $j$. The last condition keeps one big order with a few small ones from counting as a worked order. The entry reports the number of orders, duration, average price, median gap, and the taker share.
+
+Fills come from `userFillsByTime` (four hours back), requested only for wallets whose BTC size moved by at least USD 25,000 since the previous snapshot, at most 50 wallets per sweep, largest moves first. Fills that carry a liquidation record are not counted as orders. A pattern whose fills are mostly taker fills is labelled "TWAP-like, taker slices"; one filled mostly by resting orders is labelled "passive accumulation, resting orders". The entry also names what the run did to the position by notional (for example, closing a short).
+
+### Big liquidations and waves `[intel.tracker.liquidations]`
+
+Hyperliquid's public info API has **no market-wide liquidation feed**. What can be measured is this: a fill that belongs to a liquidation carries a `liquidation` record naming the liquidated wallet. Such fills appear in a tracked wallet's history either because the tracked wallet was liquidated, or because its resting order absorbed someone else's liquidation. The liquidated side is the side being closed for the wallet's own fills; for a counterparty fill it is the opposite of the tracked wallet's side (a tracked buy means a long was being sold off). Fills are deduplicated by trade id and grouped per liquidated wallet and second. The seen notional is a **lower bound** on the liquidation. To widen the sample, each sweep also scans 16 tracked wallets that moved less: first up to 8 that absorbed BTC liquidations before, then a round-robin through both cohorts.
+
+A **wave** is flagged when the last hour's seen notional is far above its recent norm:
+
+$$
+\bar{L} = \frac{\text{seen notional in the observed period before the last hour (up to 7 days)}}{\text{hours in that period}}, \qquad \mathrm{wave} \iff L_{1h} \ge \max\left(\mathrm{USD}\ 1{,}000{,}000,\ 5\,\bar{L}\right)\ \text{and}\ n_{1h} \ge 3.
+$$
+
+**Proxy, clearly labelled.** Open interest falling while price moves sharply is what a liquidation burst looks like from outside. For each pair of stored sweeps at most 75 minutes apart, with open interest $\mathrm{OI}$ in BTC and return $r$,
+
+$$
+\mathrm{flag} \iff \left(\frac{\mathrm{OI}_t}{\mathrm{OI}_{t-1}} - 1 \le -1.5\%\ \text{and}\ |r_t| \ge 1\%\right)\ \text{or}\ \left(z_{\mathrm{OI}} \le -3\ \text{and}\ |z_r| \ge 2\right), \qquad z = \frac{x - \mathrm{med}(x)}{1.4826\,\mathrm{MAD}(x)},
+$$
+
+where the robust z-scores use the previous steps of the last seven days and need at least 24 of them. A falling price marks longs as the likely side, a rising price shorts. The amount shown, $(\mathrm{OI}_{t-1} - \mathrm{OI}_t)\,m_t$, is an **upper bound**: voluntary closes also lower open interest.
+
+### How to read the Flows tab
+
+Each panel carries numbered notes on the page. The three at the top are: (1) the main number, the top cohort's short share of open BTC notional ("of every USD 100 in open positions, USD 64 is short") with its 12-hour change; (2) the money on each side, in dollars and in wallets, because a few large wallets can outweigh many small ones; (3) the last few hours: "shorts −10.86m" means the cohort is USD 10.86m less short than at the window's start.
+
 ## Research: 30-day backtest
 
 Would following this signal for 30 days have made money? A reconstructed backtest rebuilds the hourly P(long) from the fills of 100 cohort wallets and trades one unit of BTC perp on it, with the 0.045% taker fee and the hourly funding.
@@ -265,6 +344,10 @@ Would following this signal for 30 days have made money? A reconstructed backtes
 - **Open interest and its 24-hour change** are only as long as the stored history, so that fear and greed component starts empty.
 - **Cohort churn.** The cohort is rebuilt hourly; wallets that join or leave are excluded from flows, but the P(long) series still reflects membership changes.
 - The bootstrap interval and the Bayesian pseudo-count treat wallets as independent. They are not.
+- **Liquidations are sampled, not counted.** There is no public market-wide liquidation feed. The tape shows liquidations that touched the 1,000 tracked wallets' fills, so totals are lower bounds and the wave detector's norm is built from the same partial view. The open-interest proxy is an upper bound because voluntary closes also reduce open interest.
+- **Flows see snapshots, not every trade.** A position opened and closed between two sweeps (about 30 minutes, sometimes longer when GitHub delays a scheduled run) is invisible, and "trimmed" means part of a position was cut within one step. Windows longer than the stored history are disabled until it exists.
+- **Whales and worked orders are found only among tracked wallets**, and fills are requested only for wallets whose size moved by at least USD 25,000 since the previous sweep (at most 50 per sweep, four hours back). A TWAP-like pattern is a heuristic: a market maker's resting fills or a series of discretionary trades can look the same.
+- **The worst-performing cohort** is ranked on whole-account leaderboard PnL, not perp-only PnL, and its membership changes as the leaderboard updates.
 
 ## Roadmap: v2.0
 
@@ -306,7 +389,7 @@ A GitHub Actions workflow runs the Python sweep on a 30-minute cron and on manua
 | --- | --- | --- |
 | `data/signal.json` | Verdict, interval, top positions, and `intel` (every panel's numbers and chart series) | about 75 KB |
 | `data/history.json` | One compact row per sweep: P(long), posterior, mark, funding, OI, fear and greed, regime, flow, flips, grade, integrity | capped at 1,440 rows (30 days) |
-| `data/cohort.json` | The 500 wallets and `last_positions` (BTC size per wallet at the previous sweep) | rewritten each sweep |
+| `data/cohort.json` | The 500 wallets, `last_positions` (BTC size per wallet at the previous sweep), `tracker_positions` (both cohorts' sizes), `flow_log` (one compact step per sweep, eight days), and `tape` (whale and liquidation events, seven days). Written compact, on one line | rewritten each sweep, about 0.5 MB |
 | `site/backtest/` | Backtest tab data: CSV, results, chart series and figures copied from `research/backtest-30d/` by `build_docs.py`. Static: the sweep neither writes nor deletes it | fixed |
 | `data/x_sentiment.json` | Optional. Reserved for the v2.0 X sentiment feed; absent today | not read in CI unless present |
 
@@ -351,6 +434,8 @@ Unit tests (no network):
 | Info API budget | 1,200 weight / minute / IP | `portfolio` weighs 20; `clearinghouseState` and `allMids` weigh 2; `candleSnapshot`, `fundingHistory`, and `userFills` weigh 20 plus one unit per 60 candles or 20 rows, which the client charges after each response. The sweep uses a token bucket and backs off on HTTP 429. |
 | Market context | about 120 weight / sweep | Three candle series (1h for 35 days, 1d for 400 days, 15m for 16 days) and 30 days of hourly funding. |
 | Backtest refresh | once a day, about 3,600 weight | `userFills` for 30 wallets, spread over about three minutes by the bucket. |
+| Worst-performing cohort | 1,000 weight / sweep | `clearinghouseState` for 500 more wallets; the bucket spreads it over about 50 seconds. |
+| Whale and liquidation fills | typically 300 to 2,000 weight / sweep | `userFillsByTime` (four hours back, 20 plus one unit per 20 fills) for at most 50 wallets whose BTC size moved by at least USD 25,000, plus 16 wallets scanned for liquidation fills. |
 | Actions | every 30 minutes | A full 700-wallet `portfolio` pass is about ten to fifteen minutes, which would overlap a 15-minute cron. Portfolio is refreshed at most hourly. |
 
 The leaderboard is the undocumented public file [https://stats-data.hyperliquid.xyz/Mainnet/leaderboard](https://stats-data.hyperliquid.xyz/Mainnet/leaderboard) (about 38 MB, typically close to hourly). It is cached with `If-None-Match`. All other reads are official `POST https://api.hyperliquid.xyz/info` requests.

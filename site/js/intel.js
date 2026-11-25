@@ -81,6 +81,17 @@
       ["Contrarian", contra.faded_verdict ? "fade = " + contra.faded_verdict : "—", contra.text || ""],
       ["Front-running meter", fr.label || "—", fr.score != null ? "Lead score " + f(fr.score, 2) + " from " + (fr.source || "") + " (n = " + fr.n + ")." : "Not enough paired observations yet."]
     ];
+    var TK = I.tracker;
+    if (TK && TK.flow) {
+      var w4 = (TK.flow.windows || {})["4h"] || {}, s4 = w4.smart || {};
+      data.push(["Flow, 4h (top cohort)", s4.available ? "longs " + money(s4.longs_net).replace(/^(?!−)/, "+") + " / shorts " + money(s4.shorts_net).replace(/^(?!−)/, "+") : "building",
+        (s4.available ? w4.compare : (s4.reason || "")) + " Details on the Flows tab."]);
+      var LW = (TK.liquidations || {}).wave || {};
+      data.push(["Liquidation wave", LW.status || "—", "Last hour " + money(LW.last_hour_usd) + " seen in " + (LW.last_hour_events || 0) +
+        " liquidations of tracked wallets' fills; " + ((TK.liquidations || {}).count_7d || 0) + " seen in 7 days."]);
+      var wh = (TK.whales || [])[0];
+      data.push(["Whale tape", (TK.whales || []).length + " entries", wh ? "Latest: " + (wh.kind === "position" ? wh.verb + " " + wh.side.toLowerCase() + " " + money(wh.change_usd) : (wh.kind === "worked" ? "worked " + wh.side.toLowerCase() + " " + money(wh.ntl) : "order " + wh.side.toLowerCase() + " " + money(wh.ntl))) + ", " + H.fmtTime(wh.t) + " IST." : "No large moves recorded yet."]);
+    }
     var t = $("board");
     t.innerHTML = "";
     var tb = document.createElement("tbody");

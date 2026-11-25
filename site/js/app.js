@@ -174,6 +174,9 @@
     loadHistory().then(function (hist) {
       if (typeof window.renderIntel === "function") window.renderIntel(data, hist);
     });
+    if (typeof window.renderFlows === "function") {
+      try { window.renderFlows(data); } catch (err) { if (window.console) console.warn("flows failed", err); }
+    }
     document.title = verdict + " — BTC consensus, Hyperliquid one-month leaders";
   }
 
