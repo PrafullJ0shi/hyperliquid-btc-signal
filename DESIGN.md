@@ -158,3 +158,14 @@ The layer extends the same sheet rather than adding a dashboard beneath it. The 
 ### Honesty in the copy
 
 Panels that need history (accuracy, contrarian, lead-lag, open-interest change) say how much evidence they have and refuse a conclusion below a stated sample. The front-running meter reads NO CLEAR LEAD unless a non-zero lag clears the noise band. The reconstructed backtest lists its biases beside the numbers.
+
+## Rev 1.1: tabs and the Backtest research page
+
+The sheet gains one tab bar under the document head: **Signal** and **Backtest**. It is a row of two small-caps labels on a hairline, with a 3px ink underline on the active one. No pills, no fills, no accent on the tabs.
+
+- **Behaviour.** Real `tablist` / `tab` / `tabpanel` roles, roving tabindex, Left, Right, Home and End keys. Routing is by hash: `#signal` (default) and `#backtest`; any `#bt-…` section anchor opens the Backtest tab and scrolls to it, and any Signal anchor such as `#intel` opens Signal. Back and forward work. Without JavaScript both panels are shown and the bar is hidden.
+- **Fold.** The tab bar adds about 45px. On a 390px-wide screen the verdict still ends well inside the first 844px screen.
+- **Backtest page.** One research note set as a report: result block, thesis, data, method with formulas, results, reasons, checks, caveats, verdict, reproduction, files. Headings are numbered the way a paper numbers sections; figures and tables are "Fig. B1", "Table B1", "Table B2" so they do not collide with the Signal tab's numbering.
+- **Formulas.** Pre-rendered at build time to static inline SVG (`currentColor`), so there is no runtime script, no CDN and no extra font. Each display formula has an `aria-label` with its meaning in words. Wide formulas scroll inside their own container instead of widening the page.
+- **Charts.** The same hand-built SVG helpers as the Signal tab: the accent line is the primary strategy, hourly in grey, always-short dotted, buy and hold dashed. P(long) is drawn against dashed 0.40 and 0.60 thresholds. The long Table B2 scrolls horizontally inside a focusable region on narrow screens.
+- **Data.** The page reads `backtest/backtest.json` and links to the CSV and results in `backtest/`. These files are written by `research/backtest-30d/scripts/build_docs.py`, not by the sweep, and the sweep workflow only stages `data/` and `site/data/`.
