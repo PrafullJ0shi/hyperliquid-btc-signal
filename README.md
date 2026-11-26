@@ -25,6 +25,7 @@ This is **not financial advice** and **not a forecast**. It is a descriptive rea
 - [Research: 30-day backtest](#research-30-day-backtest)
 - [Limits](#limits)
 - [Upcoming: v2.0](#upcoming-v20)
+- [V2 roadmap: product and developer track](#v2-roadmap-product-and-developer-track)
 - [Architecture](#architecture)
 - [Filters, rate limits, and cadence](#filters-rate-limits-and-cadence)
 - [License](#license)
@@ -429,6 +430,23 @@ v2.0 is a planned increment, not a date and not a promise of profit. The full pl
 | Per-wallet pages | A page for one tracked wallet, opened from the tape or the position feed, built from the published snapshot. | P3 | Planned |
 
 The X sentiment panel stays empty, with no placeholder numbers, until a valid file is connected.
+
+## V2 roadmap: product and developer track
+
+The [v2.0 plan](#upcoming-v20) above covers research items. This track adds ten planned features that make the instrument easier to use, easier to build on and able to cover its own running costs. Planned, not shipped. None of it changes the formula or claims an edge.
+
+1. **Versioned signal API and webhooks.** A documented, versioned schema for `signal.json` and the history file, plus signed webhooks when a flip clears the interval rule. *Developers:* a stable contract with an OpenAPI description. *Revenue:* the static snapshot stays free; a hosted tier with history queries and webhook delivery is paid.
+2. **Verifiable call history.** Each issued snapshot is hashed and the hash is timestamped publicly (OpenTimestamps, or a small transaction on HyperEVM), with a script that proves a past reading was not edited later. *Users:* a track record nobody, including the author, can rewrite. *Developers:* a reusable verify tool.
+3. **Custom cohorts.** Choose the ranking window (day, week, month, all time), a minimum equity, and whether to exclude likely market makers, then read the same P(long) for that cohort. *Users:* test whether the reading depends on how leaders are picked. *Revenue:* saved cohorts with their own alerts sit in the paid tier.
+4. **Your position against the cohort.** Enter any address (read-only, no keys, no signing) and see the account's BTC side and size next to the leaders and their liquidation clusters. *Users:* a quick "am I with or against the crowd" check.
+5. **Builder-code trade ticket.** An optional, off-by-default order form that sends orders through Hyperliquid's official builder-code mechanism; the user approves the maximum fee in their own wallet and can revoke it at any time. The fee and the not-advice notice are shown before every order. *Developers:* an open reference integration. *Revenue:* the builder fee on routed fills.
+6. **Embeds and share cards.** An SVG badge and a small iframe with the current verdict and interval, and an auto-made image card per snapshot for posts and chats. *Users and writers:* cite the reading with its interval, not a screenshot without context. *Revenue:* free with a link back; a white-label embed is paid.
+7. **Telegram and Discord bot.** `/signal`, `/flows` and `/whales` commands and opt-in flip messages, each reply carrying the interval and the limits link. *Revenue:* free in public channels; private trading communities pay for their own instance and settings.
+8. **Python package and MCP server.** `pip install` access to the snapshot and history as data frames, and an MCP server so AI assistants can read the instrument with its caveats attached. *Developers:* research in a notebook in a few lines. *Revenue:* sponsorship, and a hosted MCP with full history in the paid tier.
+9. **Research dataset releases.** Monthly versioned archives of snapshots and flows as Parquet with a data dictionary, deposited with a citable DOI. *Researchers:* a public record of leader positioning that is otherwise lost. *Revenue:* free for research; a commercial licence for the higher-resolution archive.
+10. **Paper-trading sandbox.** Write a simple rule on top of the signal (for example, follow only when the interval clears 0.50) and replay it on live, out-of-sample history with fees and funding, paper only. *Users:* see what a rule would have done without risking money. *Revenue:* private sandboxes and longer replays in the paid tier.
+
+**Order.** V2.0: items 1, 2, 6, 7 and 8. V2.1: items 3, 4, 5, 9 and 10.
 
 ## Architecture
 
